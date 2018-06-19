@@ -2,7 +2,7 @@
 
 Stuff to make stuff run at home...
  
- 
+
 ## Content
 
 1. Server
@@ -69,6 +69,10 @@ Sources
 Products come from
 
 * [hifiBerry](https://www.hifiberry.com/products/)
+
+How to tag mp3s properly
+https://unix.stackexchange.com/questions/4961/which-mp3-tagging-tool-for-linux
+
 
 
 ## Arduino
