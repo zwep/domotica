@@ -27,6 +27,17 @@ Stuff to make stuff run at home...
         4. Control multiple sensors via arduino or ESP8266 ☐
 4. Misc
     1. Learn more about resistance and basic electronics ☐
+    2. Learn how to solder
+    3. Desolder several components
+    4. Learn how to program task-driven situations
+    5. Try a model with speech2text
+    6. Combine (e.g) MNIST and CIFAR models for multipurpose prediction
+    7. Fix a socket wall for all your chargesr
+    8. Fix the wardrobe in the hall
+    9. Clean out garage
+    10. muur vuller
+    11. pluggen op formaat
+
 
 
 ## Server
