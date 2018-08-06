@@ -18,7 +18,7 @@ res_text = rss_obj.get_all_content()
 news_source_list = rss_obj.news_source_list
 
 update_file = 'last_update.txt'
-update_path = '/home/data'
+update_path = '/var/log/domotica'
 update_file_path = os.path.join(update_path, update_file)
 
 if os.path.isfile(update_file_path):
@@ -27,6 +27,11 @@ if os.path.isfile(update_file_path):
 else:
     # Just make some fake earlier date..
     last_update = '1999-12-31 01:01:01.01'
+    # And create the file..
+    with open(update_file_path, 'w') as f:
+        f.write(last_update)
+
+
 
 last_update = datetime.strptime(last_update, '%Y-%m-%d %H:%M:%S.%f')
 last_update = pytz.utc.localize(last_update)
