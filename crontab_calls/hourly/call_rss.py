@@ -53,8 +53,8 @@ for news_source in news_source_list:
         else:
             old_items += 1
 
-    print('Seen {0} items'.format(new_items))
-    print('Implemented {0} items'.format(old_items))
+print('Seen {0} items'.format(new_items))
+print('Implemented {0} items'.format(old_items))
 
 
 timezone_cor = pytz.timezone('Europe/Amsterdam')
