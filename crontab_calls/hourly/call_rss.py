@@ -43,7 +43,7 @@ for news_source in news_source_list:
         content_date = datetime.strptime(i_content['date'], '%a, %d %b %Y %H:%M:%S %z')
 
         if content_date > last_update:
-            es.index(index='news', body=i_content, doc_type='_doc')
+            es.index(index='dutch_news', body=i_content, doc_type='_doc')
         else:
             print('We already have the content')
 
