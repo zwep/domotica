@@ -36,6 +36,9 @@ else:
 last_update = datetime.strptime(last_update, '%Y-%m-%d %H:%M:%S.%f')
 last_update = pytz.utc.localize(last_update)
 
+new_items = 0
+old_items = 0
+
 for news_source in news_source_list:
     news_content = res_text[news_source]
     i_content = news_content[0]
@@ -43,11 +46,16 @@ for news_source in news_source_list:
         content_date = datetime.strptime(i_content['date'], '%a, %d %b %Y %H:%M:%S %z')
 
         if content_date > last_update:
+            new_items += 1
             es.index(index='dutch_news', body=i_content, doc_type='_doc')
         else:
-            print('We already have the content')
+            old_items += 1
+
+    print('Seen {0} items'.format(new_items))
+    print('Implemented {0} items'.format(old_items))
 
 
-current_time = str(datetime.now())
+timezone_cor = pytz.timezone('Europe/Amsterdam')
+current_time = str(datetime.now(timezone_cor))
 with open(update_file_path, 'w') as f:
     f.write(current_time)
