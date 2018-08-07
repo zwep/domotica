@@ -9,7 +9,7 @@ from zwep.helper import loadrss as rss
 import pytz
 import os
 from datetime import datetime
-from pathlib import Path
+from dateutil.parser import parse as duparse
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch()
@@ -26,15 +26,16 @@ if os.path.isfile(update_file_path):
         last_update = f.read()
 else:
     # Just make some fake earlier date..
-    last_update = '1999-12-31 01:01:01.01'
+    last_update = '1999-12-31 01:01:01.01+02:00'
     # And create the file..
     with open(update_file_path, 'w') as f:
         f.write(last_update)
 
 
 
-last_update = datetime.strptime(last_update, '%Y-%m-%d %H:%M:%S.%f')
-last_update = pytz.utc.localize(last_update)
+# last_update = datetime.strptime(last_update, '%Y-%m-%d %H:%M:%S.%f %z')
+# last_update = pytz.utc.localize(last_update)
+last_update = duparse(last_update)
 
 new_items = 0
 old_items = 0
@@ -43,7 +44,8 @@ for news_source in news_source_list:
     news_content = res_text[news_source]
     i_content = news_content[0]
     for i_content in news_content:
-        content_date = datetime.strptime(i_content['date'], '%a, %d %b %Y %H:%M:%S %z')
+        # content_date = datetime.strptime(i_content['date'], '%a, %d %b %Y %H:%M:%S %z')
+        content_date = duparse(i_content['date'])
 
         if content_date > last_update:
             new_items += 1
