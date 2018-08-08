@@ -5,7 +5,6 @@ This is the script that can be run on a hourly basis in order to catch all the n
 """
 
 from zwep.helper import loadrss as rss
-
 import pytz
 import os
 from datetime import datetime
@@ -31,30 +30,36 @@ else:
     with open(update_file_path, 'w') as f:
         f.write(last_update)
 
-
-
-# last_update = datetime.strptime(last_update, '%Y-%m-%d %H:%M:%S.%f %z')
-# last_update = pytz.utc.localize(last_update)
 last_update = duparse(last_update)
 
-new_items = 0
-old_items = 0
-
+# Here we loop over all the news sources and add all the items to ElasticSearch
+# But only if their publication date is after our latest update
 for news_source in news_source_list:
+    # Keep track of items per news source
+    new_items = 0
+    old_items = 0
+
     news_content = res_text[news_source]
     i_content = news_content[0]
     for i_content in news_content:
-        # content_date = datetime.strptime(i_content['date'], '%a, %d %b %Y %H:%M:%S %z')
         content_date = duparse(i_content['date'])
 
         if content_date > last_update:
+            # A check to see if our date comparisson is correct
+            n_space = ' '*(len(str(content_date))-len('Content') + 1)
+            print('Content' + n_space + 'Last update')
+            print(content_date, last_update)
+
             new_items += 1
             es.index(index='dutch_news', body=i_content, doc_type='_doc')
         else:
             old_items += 1
 
-print('Seen {0} items'.format(new_items))
-print('Implemented {0} items'.format(old_items))
+    # Overview of the implemented and seen items
+    print('News soure: ', news_source)
+    print('Old {0} items'.format(new_items))
+    print('New {0} items'.format(old_items))
+    print('---------------\n')
 
 
 timezone_cor = pytz.timezone('Europe/Amsterdam')
