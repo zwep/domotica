@@ -57,8 +57,8 @@ for news_source in news_source_list:
 
     # Overview of the implemented and seen items
     print('News soure: ', news_source)
-    print('Old {0} items'.format(new_items))
-    print('New {0} items'.format(old_items))
+    print('Old {0} items'.format(old_items))
+    print('New {0} items'.format(new_items))
     print('---------------\n')
 
 
