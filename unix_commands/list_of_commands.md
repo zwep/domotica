@@ -1,11 +1,26 @@
 Here we show a list of commands I have used or had to use frequently.
 
 
-## Connect
+## Connections
 
-Most secure way...
+A way to connect to a remote address
 ```sh
 ssh USERNAME@ADRES 
+```
+
+A way to send stuff to a remote address
+```bash
+scp /path/to/file USERNAME@location:/path/to/dest
+```
+
+What wifi is there?
+```bash
+nmcli dev wifi
+```
+
+What are my ports doing?
+```bash
+netstat -l
 ```
 
 ## File management
