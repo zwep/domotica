@@ -33,6 +33,16 @@ To see the current disk usage, in readable form, for a limited depth, use
 du -h --max-depth=1 /path/to/folder
 ```
 
+## Navigation
+
+Of course... the most easiest commands
+```bash
+ls
+ll 
+cd
+cd ..
+
+```
 
 ## External file management
 
@@ -99,5 +109,15 @@ ps
 Use cron for this, you can edit the jobs via
 ```bash
 crontab -e
+```
+
+
+## Specific actions
+
+If you want to move a set of documents, that satisfy a certain collective regex naming convention, towards a specific
+ destination... We can execute
+ 
+ ```bash
+ ➜  find . -name "REGEXPATTERN" | xargs mv -t path/to/your/destination
 ```
 
