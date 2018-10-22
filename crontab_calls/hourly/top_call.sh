@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DATE=$(date +"%Y_%m_%d")
-MAIN_PATH_TO_DATA="/home/seb/data/top/${DATE}_rawfile.txt"
+MAIN_PATH_TO_DATA="$HOME/data/top/${DATE}_rawfile.txt"
 TIME=$(date +"%H:%M")
 
 echo >> $MAIN_PATH_TO_DATA
