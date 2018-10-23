@@ -35,7 +35,7 @@ def parse_raw_to_csv(input_file):
     with open(input_file, 'r') as f:
         a_text = f.read()
 
-    input_file = '/home/charmmaria/data/top_rawtext/2018_10_18_rawfile.txt'
+    # input_file = '/home/charmmaria/data/nvidia_rawtext/2018_10_18_rawfile.txt'
 
     raw_date = re.findall("([0-9]{4}_[0-9]{2}_[0-9]{2})_rawfile.txt", input_file)
     # print(raw_date)
@@ -46,12 +46,12 @@ def parse_raw_to_csv(input_file):
     for i_text_stamp in parsed_text:
         i_timestamp = i_text_stamp[0]
         i_datestamp = raw_date[0] + ' ' + i_timestamp
-        raw_str_values = [x for x in i_text_stamp[1:] if '%' not in x]
-        str_values = [[i_datestamp] + x.split() for x in raw_str_values]
+        raw_str_values = [x for x in i_text_stamp[1:] if '%' in x]
+        str_values = [[i_datestamp, str(i_gpu).zfill(2)] +
+                      re.sub(' / ', '/', re.sub('\|', '', x)).split() for i_gpu, x in enumerate(raw_str_values)]
         hourly_data.extend(str_values)
 
-    ## ALMOST DONE
-    # TODO test this, fix the column name.. et voila
+
     # Use one selected piece of text to extract the column names
     str_colname = [x for x in sel_text if 'Fan' in x][0]
     # We need to ditch the last one like this.. because it has a space we can fix easily.
