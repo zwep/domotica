@@ -23,6 +23,11 @@ What are my ports doing?
 netstat -l
 ```
 
+Having Citrix SSL error 61? (This is oddly specific btw)
+```bash
+sudo ln -s /usr/share/ca-certificates/mozilla/* /opt/Citrix/ICAClient/keystore/cacerts
+```
+
 ## File management
 
 Useful tools

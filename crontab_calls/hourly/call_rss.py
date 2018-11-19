@@ -30,6 +30,7 @@ else:
     with open(update_file_path, 'w') as f:
         f.write(last_update)
 
+# With this we parse the date that was found in the file
 last_update = duparse(last_update)
 
 # Here we loop over all the news sources and add all the items to ElasticSearch

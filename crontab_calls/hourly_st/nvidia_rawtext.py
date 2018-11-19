@@ -65,8 +65,8 @@ if __name__ == '__main__':
         path_to_text = parsed_arg.i
     else:
         path_to_text = ''
+        path_to_text = '/home/charmmaria/data/nvidia'
 
-    path_to_text = '/home/charmmaria/data/nvidia_rawtext'
     daily_data = []
     list_files = [os.path.join(path_to_text, x) for x in os.listdir(path_to_text) if x.endswith('rawfile.txt')]
     list_files = sorted(list_files)

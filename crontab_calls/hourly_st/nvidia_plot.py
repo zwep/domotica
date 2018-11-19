@@ -26,7 +26,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 
-path_to_csv = '/home/charmmaria/data/nvidia_rawtext'
+path_to_csv = '/home/charmmaria/data/nvidia'
 file_name = 'nvidia_database.csv'
 
 divfun = lambda a: round(int(a[0])/int(a[1])*100)
@@ -77,12 +77,17 @@ A_ugpu = set(A_gpu)
 for i, i_name in enumerate(plot_cols):
     for i_gpu in A_ugpu:
         index_gpu = B['GPU'] == i_gpu
-        plt.figure(i)
+        fig = plt.figure(i)
+        #ax = fig.axes[0]
         plt.title(i_name)
+        #ax.axvspan(B.loc[index_gpu, 'Time'].tolist()[0].date(), B.loc[index_gpu, 'Time'].tolist()[10].date(),
+        # alpha=0.5)
         plt.plot(B.loc[index_gpu, 'Time'], B.loc[index_gpu, i_name], '.--')
 
+    # B.loc[index_gpu, 'Time'][0]
     plt.xticks(rotation=45)
 
-
-for i in range(100):
-    plt.close()
+# B.loc[index_gpu, 'Time']
+#
+# for i in range(100):
+#     plt.close()

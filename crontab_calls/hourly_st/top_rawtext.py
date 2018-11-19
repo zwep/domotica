@@ -50,12 +50,13 @@ def parse_raw_to_csv(input_file):
         str_values = [[i_datestamp] + x.split() for x in raw_str_values]
         hourly_data.extend(str_values)
 
-    ## ALMOST DONE
-    # TODO test this, fix the column name.. et voila
+    hourly_data = [x for x in hourly_data if len(x)>1]
     # Use one selected piece of text to extract the column names
-    str_colname = [x for x in sel_text if 'Fan' in x][0]
+    str_colname = [x for x in sel_text if 'PID' in x][0].split()
     # We need to ditch the last one like this.. because it has a space we can fix easily.
-    col_names = [['Time', 'GPU'] + re.sub(' / ', '/', re.sub('\|', '', str_colname)).split()[:-1]]
+    col_names = ['Time'] + str_colname
+    n_col = len(col_names)
+    hourly_data = [x if len(x) == n_col else x[:(n_col-1)] + [' '.join(x[n_col:])] for x in hourly_data]
 
     return col_names, hourly_data
 
@@ -65,8 +66,8 @@ if __name__ == '__main__':
         path_to_text = parsed_arg.i
     else:
         path_to_text = ''
+        path_to_text = '/home/charmmaria/data/top'
 
-    path_to_text = '/home/charmmaria/data/nvidia_rawtext'
     daily_data = []
     list_files = [os.path.join(path_to_text, x) for x in os.listdir(path_to_text) if x.endswith('rawfile.txt')]
     list_files = sorted(list_files)
@@ -80,7 +81,7 @@ if __name__ == '__main__':
     # import numpy as np
     # np.array(col_names).tofile('/home/charmmaria/test_csv.csv')
 
-    csv_filename = os.path.join(path_to_text, 'nvidia_database.csv')
+    csv_filename = os.path.join(path_to_text, 'top_database.csv')
     A = pd.DataFrame(daily_data)
     A.columns = col_names
     A.to_csv(csv_filename, index=False)
