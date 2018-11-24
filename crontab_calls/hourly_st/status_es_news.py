@@ -10,6 +10,7 @@ data. Just to see how many duplicates we generate and where..
 # dupli_dict = es_help.identify_duplicate_titles(all_content)
 # dupli_content = es_help.find_duplicate_titles(dupli_dict)
 from elasticsearch import Elasticsearch
+import collections
 
 # def get_all_content(step_size=20):
 es = Elasticsearch()
