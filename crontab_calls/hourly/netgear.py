@@ -2,6 +2,7 @@
 
 """ Testing netgear connection """
 
+print('Starting script')
 from pynetgear import Netgear
 from elasticsearch import Elasticsearch
 import os
