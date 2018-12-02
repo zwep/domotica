@@ -10,6 +10,10 @@ from datetime import datetime
 print('Loaded all libraries\n')
 es = Elasticsearch()
 print('Setup elasticsearch \n')
+
+print('Environmental keys')
+for i in os.environ.keys():
+    print(i)
 netgear = Netgear(password=os.environ['netgear_key'])
 print('Logged in with username: ', netgear.username)
 
