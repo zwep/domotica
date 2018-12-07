@@ -28,6 +28,11 @@ Having Citrix SSL error 61? (This is oddly specific btw)
 sudo ln -s /usr/share/ca-certificates/mozilla/* /opt/Citrix/ICAClient/keystore/cacerts
 ```
 
+(Port forwarding) Want to transfer data from remote port to local? Check this out
+```bash
+ssh -L 16006:127.0.0.1:6006 user@my_server_ip
+```
+
 ## File management
 
 Useful tools
