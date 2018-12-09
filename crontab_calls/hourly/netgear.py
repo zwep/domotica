@@ -21,8 +21,8 @@ for i in netgear.get_attached_devices():
     temp_dict['date'] = datetime.isoformat(datetime.now())
     es.index(index='netgear', body=temp_dict, doc_type='_doc')
 
-
-traffic_dict = netgear.get_traffic_meter()
-traffic_dict['date'] = datetime.isoformat(datetime.now())
-es.index(index='netgear', body=traffic_dict, doc_type='_doc')
+# We remove this to reduce traffic...?
+#traffic_dict = netgear.get_traffic_meter()
+#traffic_dict['date'] = datetime.isoformat(datetime.now())
+#es.index(index='netgear', body=traffic_dict, doc_type='_doc')
 

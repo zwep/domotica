@@ -4,7 +4,7 @@
 This is the script that can be run on a hourly basis in order to catch all the news items from various sources.
 """
 
-from zwep.helper import loadrss as rss
+from RSS import news_rss as rss
 import pytz
 import os
 from datetime import datetime
