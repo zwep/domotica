@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/image_column.css') }}">
+</head>
+<body>
+<div class="row">
+    {% for n in name_list %}
+    <div class="column">
+        <img src="{{url_for('static', filename=n + '.jpg')}}" id="{{n}}" style="opacity: {{opacity_list[loop.index0]}}">
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>

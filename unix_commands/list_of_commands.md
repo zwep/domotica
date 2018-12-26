@@ -33,6 +33,10 @@ sudo ln -s /usr/share/ca-certificates/mozilla/* /opt/Citrix/ICAClient/keystore/c
 ssh -L 16006:127.0.0.1:6006 user@my_server_ip
 ```
 
+Check if mysql is running...
+```bash
+systemctl status mysql.service
+```
 ## File management
 
 Useful tools
@@ -112,6 +116,14 @@ or
 ```bash
 ps
 ```
+
+## Package management
+
+Shows list of all libraries installed
+```bash
+dpkg -l
+```
+
 
 
 ## Scheduling
