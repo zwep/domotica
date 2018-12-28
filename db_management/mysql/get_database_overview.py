@@ -1,13 +1,13 @@
 # encoding: utf-8
 
 import os
-import MySQLdb
+import pymysql
 from config import *
 
 import db_management.mysql.check_content as check_content
 
 seb_mysql_key = os.environ['seb_mysql_key']
-conn = MySQLdb.connect('localhost', 'seb', seb_mysql_key)
+conn = pymysql.connect('localhost', 'seb', seb_mysql_key)
 cursor = conn.cursor()
 
 # Show databases

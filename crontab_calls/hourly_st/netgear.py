@@ -4,9 +4,7 @@
 
 
 from config import *
-import MySQLdb
 import os
-import db_management.mysql.check_content as check_mysql
 from netgear_code.get_netgear import get_netgear_devices
 import sqlalchemy
 
