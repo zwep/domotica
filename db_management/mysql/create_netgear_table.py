@@ -4,12 +4,19 @@
 
 """
 
-from config import *
+import sys
 import pymysql
 import os
+import sqlalchemy
+
+if '__file__' in vars():
+    project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    sys.path.append(project_path)
+
+# Own code
+from config import *
 import db_management.mysql.check_content as check_mysql
 from netgear_code.get_netgear import get_netgear_devices
-import sqlalchemy
 
 
 # Obtaining netgear_code devices

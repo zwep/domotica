@@ -4,12 +4,20 @@
 This is the script that can be run on a hourly basis in order to catch all the news items from various sources.
 """
 
-from RSS import news_rss as rss
 import pytz
 import os
 from datetime import datetime
 from dateutil.parser import parse as duparse
 from elasticsearch import Elasticsearch
+import sys
+
+if '__file__' in vars():
+    project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    sys.path.append(project_path)
+
+# Own code
+from RSS import news_rss as rss
+
 
 es = Elasticsearch()
 rss_obj = rss.RssUrl()

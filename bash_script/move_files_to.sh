@@ -6,5 +6,5 @@ DEST=/usr/local/bin/
 for f in ${FILES}
 do
     printf "\n Moving file: ${f}"
-    mv ${f} ${DEST}
+    cp ${f} ${DEST}
 done
