@@ -25,7 +25,7 @@ res = check_mysql.check_database_name(cursor, DB_NAME_NETGEAR)
 
 
 # Create engine
-engine = sqlalchemy.create_engine('mysql://{user}:{password}@localhost/{db}'.format(user=MYSQL_USER,
+engine = sqlalchemy.create_engine('mysql+pymysql://{user}:{password}@localhost/{db}'.format(user=MYSQL_USER,
                                                                                     password=os.environ['seb_mysql_key'],
                                                                                     db=DB_NAME_NETGEAR))
 
