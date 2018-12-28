@@ -4,49 +4,43 @@
 
 """
 
-import config
-import MySQLdb
+from config import *
+import pymysql
 import os
 import db_management.mysql.check_content as check_mysql
 from netgear_code.get_netgear import get_netgear_devices
 import sqlalchemy
 
 
-seb_mysql_key = os.environ['seb_mysql_key']
-db_name = 'domotica'
-table_name = 'netgear_code'
-db_user = 'seb'
-
 # Obtaining netgear_code devices
 A = get_netgear_devices()
 
-
 # Create database...
-con = MySQLdb.connect('localhost', 'seb', seb_mysql_key)
+con = pymysql.connect('localhost', 'seb', os.environ['seb_mysql_key'])
 cursor = con.cursor()
 
-print('Creating database: ', db_name)
-cursor.execute("CREATE DATABASE IF NOT EXISTS {0}".format(db_name))
-res = check_mysql.check_database_name(cursor, db_name)
+print('Creating database: ', DB_NAME_NETGEAR)
+cursor.execute("CREATE DATABASE IF NOT EXISTS {0}".format(DB_NAME_NETGEAR))
+res = check_mysql.check_database_name(cursor, DB_NAME_NETGEAR)
 
 
 # Create engine
-engine = sqlalchemy.create_engine('mysql://{user}:{password}@localhost/{db}'.format(user=db_user,
-                                                                                    password=seb_mysql_key,
-                                                                                    db=db_name))
+engine = sqlalchemy.create_engine('mysql://{user}:{password}@localhost/{db}'.format(user=MYSQL_USER,
+                                                                                    password=os.environ['seb_mysql_key'],
+                                                                                    db=DB_NAME_NETGEAR))
 
 # Add data to the database
 A.to_sql('netgear_code', con=engine, index=False)
 
 # Empty the content of the database - so we are only left with the schema
-cursor.execute("USE {db_name}".format(db_name=db_name))
-cursor.execute("TRUNCATE TABLE {table_name}".format(table_name=table_name))
-check_mysql.check_table_name(cursor, table_name, db_name)
+cursor.execute("USE {db_name}".format(db_name=DB_NAME_NETGEAR))
+cursor.execute("TRUNCATE TABLE {table_name}".format(table_name=TABLE_NAME_NETGEAR))
+check_mysql.check_table_name(cursor, TABLE_NAME_NETGEAR, DB_NAME_NETGEAR)
 
 # Check content
-cursor.execute("SELECT * FROM {table_name};".format(table_name=table_name))
+cursor.execute("SELECT * FROM {table_name};".format(table_name=TABLE_NAME_NETGEAR))
 B = cursor.fetchall()
 
-print('Content of table: {table_name}'.format(table_name=table_name))
+print('Content of table: {table_name}'.format(table_name=TABLE_NAME_NETGEAR))
 for x in B:
     print(x)

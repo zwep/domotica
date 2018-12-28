@@ -2,16 +2,19 @@
 
 import os
 import MySQLdb
-import config
+from config import *
+
+import db_management.mysql.check_content as check_content
 
 seb_mysql_key = os.environ['seb_mysql_key']
 conn = MySQLdb.connect('localhost', 'seb', seb_mysql_key)
 cursor = conn.cursor()
 
 # Show databases
-databases = ("show databases")
+databases = "show databases"
 cursor.execute(databases)
-res_databases = cursor.fetchall()
+res_databases = [x[0] for x in cursor.fetchall()]
+filter_databases = [x for x in res_databases if x not in DATABASE_FILTER]
 
 print('\n Overview databases \n')
 for i in res_databases:
@@ -20,13 +23,15 @@ for i in res_databases:
 print('\n Overview tables in databases \n')
 # Show tables
 for i_db in res_databases:
-    cursor.execute("use " + i_db[0])
+    cursor.execute("use " + i_db)
     cursor.execute("show tables")
     res_tables = cursor.fetchall()
     print('\t Database: ', i_db)
     if len(res_tables):
         for i_table in res_tables:
-            print('\t\tTable name: ', i_table)
+            print('\t\t Table name: ', i_table[0])
+            if i_db in filter_databases:
+                check_content.check_table_content(cursor, i_table[0], i_db)
     else:
         print('\t\t No tables have been found')
         
