@@ -21,8 +21,8 @@ pynetgear==0.5.1
 pyparsing==2.3.0
 python-dateutil==2.7.5
 pytz==2018.3
-requests==2.18.4
+requests==2.21.0
 six==1.12.0
 SQLAlchemy==1.2.15
-urllib3==1.22
+urllib3==1.24.1
 Werkzeug==0.14.1

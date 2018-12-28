@@ -13,6 +13,7 @@ import sys
 
 if '__file__' in vars():
     project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    print('Adding path: ', project_path)
     sys.path.append(project_path)
 
 # Own code
