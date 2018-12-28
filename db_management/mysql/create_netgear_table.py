@@ -11,7 +11,7 @@ import sqlalchemy
 
 if '__file__' in vars():
     project_path = os.path.abspath(os.path.join(__file__, os.path.pardir, os.path.pardir, os.path.pardir))
-    print('Adding path: ', project_path)
+    print('\n Adding path: ', project_path)
     sys.path.append(project_path)
 
 # Own code
