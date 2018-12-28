@@ -26,6 +26,6 @@ engine = sqlalchemy.create_engine('mysql+pymysql://{user}:{password}@localhost/{
                                                                                     db=DB_NAME_NETGEAR))
 
 # Add data to the database
-A.to_sql(DB_NAME_NETGEAR, con=engine, index=False, if_exists='append')
+A.to_sql(TABLE_NAME_NETGEAR, con=engine, index=False, if_exists='append')
 
 

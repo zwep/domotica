@@ -38,7 +38,7 @@ engine = sqlalchemy.create_engine('mysql+pymysql://{user}:{password}@localhost/{
                                                                                     db=DB_NAME_NETGEAR))
 
 # Add data to the database
-A.to_sql(DB_NAME_NETGEAR, con=engine, index=False)
+A.to_sql(TABLE_NAME_NETGEAR, con=engine, index=False)
 
 # Empty the content of the database - so we are only left with the schema
 cursor.execute("USE {db_name}".format(db_name=DB_NAME_NETGEAR))
