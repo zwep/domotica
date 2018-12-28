@@ -1,7 +1,7 @@
 # encoding: utf-8
+import pymysql
 
 import os
-import pymysql
 import sys
 
 if '__file__' in vars():
