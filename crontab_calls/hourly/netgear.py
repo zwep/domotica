@@ -1,28 +1,24 @@
 # encoding: utf-8
 
-""" Testing netgear_code connection """
+""" Netgear to mysql """
 
-print('Starting script\n')
-from pynetgear import Netgear
-from elasticsearch import Elasticsearch
+
+from config import *
 import os
-from datetime import datetime
-print('Loaded all libraries\n')
-es = Elasticsearch()
+from netgear_code.get_netgear import get_netgear_devices
+import sqlalchemy
 
+seb_mysql_key = os.environ['seb_mysql_key']
 
+# Obtaining netgear_code devices
+A = get_netgear_devices()
 
-for i in os.environ.keys():
-    print(i)
-netgear = Netgear(password=os.environ['netgear_key'])
+# Create engine
+engine = sqlalchemy.create_engine('mysql+pymysql://{user}:{password}@localhost/{db}'.format(user=MYSQL_USER,
+                                                                                    password=seb_mysql_key,
+                                                                                    db=DB_NAME_NETGEAR))
 
-for i in netgear.get_attached_devices():
-    temp_dict = dict(zip(i._fields, list(i)))
-    temp_dict['date'] = datetime.isoformat(datetime.now())
-    es.index(index='netgear_code', body=temp_dict, doc_type='_doc')
+# Add data to the database
+A.to_sql(DB_NAME_NETGEAR, con=engine, index=False, if_exists='append')
 
-# We remove this to reduce traffic...?
-#traffic_dict = netgear_code.get_traffic_meter()
-#traffic_dict['date'] = datetime.isoformat(datetime.now())
-#es.index(index='netgear_code', body=traffic_dict, doc_type='_doc')
 

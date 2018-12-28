@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-""" Testing netgear_code connection """
+""" Netgear to mysql """
 
 
 from config import *
