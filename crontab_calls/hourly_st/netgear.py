@@ -14,11 +14,11 @@ seb_mysql_key = os.environ['seb_mysql_key']
 A = get_netgear_devices()
 
 # Create engine
-engine = sqlalchemy.create_engine('mysql://{user}:{password}@localhost/{db}'.format(user=MYSQL_USER,
+engine = sqlalchemy.create_engine('mysql+pymysql://{user}:{password}@localhost/{db}'.format(user=MYSQL_USER,
                                                                                     password=seb_mysql_key,
                                                                                     db=DB_NAME_NETGEAR))
 
 # Add data to the database
-A.to_sql('netgear', con=engine, index=False, if_exists='append')
+A.to_sql(DB_NAME_NETGEAR, con=engine, index=False, if_exists='append')
 
 

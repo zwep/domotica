@@ -40,4 +40,3 @@ for i_db in res_databases:
                 check_content.check_table_content(cursor, i_table[0], i_db)
     else:
         print('\t\t No tables have been found')
-        
