@@ -23,6 +23,11 @@ What are my ports doing?
 netstat -l
 ```
 
+Can I connect with this port? (some ip adress, and some port)
+```bash
+telnet 192.168.178.1 8888
+```
+
 Having Citrix SSL error 61? (This is oddly specific btw)
 ```bash
 sudo ln -s /usr/share/ca-certificates/mozilla/* /opt/Citrix/ICAClient/keystore/cacerts
@@ -117,6 +122,11 @@ or
 ps
 ```
 
+Want to see why startup takes so long?
+```bash
+systemd-analyze blame
+```
+
 ## Package management
 
 Shows list of all libraries installed
@@ -133,6 +143,12 @@ Use cron for this, you can edit the jobs via
 crontab -e
 ```
 
+## Database management
+
+For MySQL, want to know which paramters are set?
+```bash
+show variables;
+```
 
 ## Specific actions
 

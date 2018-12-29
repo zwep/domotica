@@ -1,4 +1,8 @@
-#
+# encoding: utf-8
+
+"""
+Converserion of data from elasticsearch to mysql
+"""
 
 
 import elasticsearch as es
