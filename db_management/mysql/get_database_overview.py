@@ -2,7 +2,6 @@
 
 
 import pymysql
-
 import os
 import sys
 
