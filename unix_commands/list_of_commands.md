@@ -52,6 +52,13 @@ To see the current disk usage, in readable form, for a limited depth, use
 du -h --max-depth=1 /path/to/folder
 ```
 
+Move certain files (recursively) to a new location, and thus maintaining the folder structure.
+
+``` bash
+ rsync -avm --include='*.list' -f 'hide,! */' . /home/charmmaria/Documents/Promoveren/data/mri_datalist/misc_data_list_2
+```
+
+
 ## Navigation
 
 Of course... the most easiest commands

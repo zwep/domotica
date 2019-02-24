@@ -36,8 +36,8 @@ def home():
     Render the home page
     :return:
     """
-    netgear_dict = get_netgear()
-    print(netgear_dict)
-    opacity_list = parse_activity(name_list, netgear_dict)
-
+    # netgear_dict = get_netgear()
+    # print(netgear_dict)
+    # opacity_list = parse_activity(name_list, netgear_dict)
+    opacity_list = [0.2, 1, 1, 0.2, 0.2 ,1]
     return render_template('image_column.html', name_list=name_list, opacity_list=opacity_list)
