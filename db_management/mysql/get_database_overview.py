@@ -16,9 +16,9 @@ import db_management.mysql.check_content as check_content
 
 
 seb_mysql_key = os.environ['seb_mysql_key']
-conn = pymysql.connect('192.168.1.7:3306', 'seb', seb_mysql_key)
+conn = pymysql.connect('192.168.1.5:3306', 'seb', seb_mysql_key)
 import MySQLdb
-MySQLdb.connect('192.168.1.7:3306', 'seb', seb_mysql_key)
+MySQLdb.connect('192.168.1.5:3306', 'seb', seb_mysql_key)
 cursor = conn.cursor()
 
 # Show databases
