@@ -18,9 +18,17 @@ import re
 import pandas as pd
 import argparse
 import os
+import sys
+
+if os.name == 'nt':
+    windows_system = True
+else:
+    windows_system = False
+
 
 arg_parse = argparse.ArgumentParser()
 arg_parse.add_argument('-i', help='Gives the input path name to process', type=str)
+sys.argv = ['test3.py', '-i', '']
 parsed_arg = arg_parse.parse_args()
 
 
@@ -51,7 +59,6 @@ def parse_raw_to_csv(input_file):
                       re.sub(' / ', '/', re.sub('\|', '', x)).split() for i_gpu, x in enumerate(raw_str_values)]
         hourly_data.extend(str_values)
 
-
     # Use one selected piece of text to extract the column names
     str_colname = [x for x in sel_text if 'Fan' in x][0]
     # We need to ditch the last one like this.. because it has a space we can fix easily.
@@ -64,8 +71,10 @@ if __name__ == '__main__':
     if parsed_arg.i:
         path_to_text = parsed_arg.i
     else:
-        path_to_text = ''
-        path_to_text = '/home/charmmaria/data/nvidia'
+        if windows_system:
+            path_to_text = r'C:\Users\20184098\Documents\data\nvidia'
+        else:
+            path_to_text = '/home/charmmaria/data/nvidia'
 
     daily_data = []
     list_files = [os.path.join(path_to_text, x) for x in os.listdir(path_to_text) if x.endswith('rawfile.txt')]

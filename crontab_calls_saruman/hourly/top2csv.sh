@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# scp -r seb@saruman.bmt.tue.nl:/home/seb/data/top/ ~/data/
+# scp -r seb@saruman.bmt.tue.nl:/home/seb/data/top/ C:\Users\20184098\Documents\data
 DATE=$(date +"%Y_%m_%d")
 # MAIN_PATH_TO_DATA="$HOME/data/nvidia_rawtext/${DATE}_rawfile.txt"
 MAIN_PATH_TO_DATA="$HOME/data/top"
