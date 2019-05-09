@@ -28,6 +28,7 @@ else:
 
 arg_parse = argparse.ArgumentParser()
 arg_parse.add_argument('-i', help='Gives the input path name to process', type=str)
+# This is to prevent some malfunctioning of argpars when we run it in console
 sys.argv = ['test3.py', '-i', '']
 parsed_arg = arg_parse.parse_args()
 

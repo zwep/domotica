@@ -79,12 +79,14 @@ def smooth(x, window_len=11, window='hanning'):
     if window == 'flat':  # moving average
         w = np.ones(window_len, 'd')
     else:
-        w = eval('numpy.' + window + '(window_len)')
+        w = eval('np.' + window + '(window_len)')
 
     y = np.convolve(w / w.sum(), s, mode='valid')
     return y
 
 
+# Choosing the right system
+file_name = 'nvidia_database.csv'
 if os.name == 'nt':
     windows_system = True
 else:
@@ -95,8 +97,7 @@ if windows_system:
 else:
     path_to_csv = '/home/charmmaria/data/nvidia'
 
-file_name = 'nvidia_database.csv'
-
+# Simple function definition
 divfun = lambda a: round(int(a[0])/int(a[1])*100)
 
 # Read data
@@ -108,6 +109,11 @@ A = A[1:]
 B = pd.DataFrame(np.empty(A.shape))
 B.columns = list(A_col.keys())
 
+# ====================
+# Format procedure
+# ====================
+
+# Format GPU column
 A_gpu = A[:, A_col['GPU']]
 B['GPU'] = A[:, A_col['GPU']].astype(str)
 
@@ -140,8 +146,17 @@ B['Memory-Usage'] = A_mem_format
 plot_cols = ['Memory-Usage', 'Pwr:Usage/Cap', 'Temp', 'Fan']
 A_ugpu = list(set(A_gpu))
 
+# ====================
+# Plotting procedure
+# ====================
+
 # Display the things...
 # Bar plots are insanely annoing. Need a test case of some sort to explore this..
+filter_time = True
+
+if filter_time:
+    print('We are filtering on time!!')
+
 for i, i_name in enumerate(plot_cols):
 
     img_list = []
@@ -151,36 +166,56 @@ for i, i_name in enumerate(plot_cols):
         y = B.loc[index_gpu, i_name].rolling(28).mean()
         img_list.append(y)
 
-    fig = plt.figure(i)
+    if filter_time:
+        import datetime
+        n_week = 3
+        neg_week = datetime.timedelta(weeks=n_week)
+        zero_time = datetime.datetime.today() - neg_week
+        t_time_ind = t_time >= zero_time
+
+        t_time = t_time[t_time_ind]
+        img_list = [x.loc[t_time_ind.values] for x in img_list]
+
+    fig, ax_list = plt.subplots(ncols=3, num=i)
     fig.suptitle(i_name, fontsize=16)
-    plt.subplot(131)
-    plt.plot(t_time, img_list[0], 'r', label='GPU number' + A_ugpu[0])
-    plt.legend()
-    plt.xticks(rotation=45)
-    plt.subplot(132)
-    plt.plot(t_time, img_list[1], 'g', label='GPU number' + A_ugpu[1])
-    plt.legend()
-    plt.xticks(rotation=45)
-    plt.subplot(133)
-    plt.plot(t_time, img_list[2], 'b', label='GPU number' + A_ugpu[2])
-    plt.legend()
-    plt.xticks(rotation=45)
+    subplot_counter = 0
+    min_value = int(np.min(img_list))
+    max_value = int(np.max(img_list))
+
+    for color, i_img in zip(['r', 'g', 'b'], img_list):
+        plot_name = 'GPU number' + A_ugpu[subplot_counter]
+        y_plot = img_list[subplot_counter]
+
+        ax_list[subplot_counter].plot(t_time, y_plot, color, label=plot_name)
+        ax_list[subplot_counter].set_ylim([min_value, max_value])
+        ax_list[subplot_counter].set_xticklabels(labels=t_time, rotation=45)
+
+        subplot_counter += 1
+    fig.legend()
+
+# =====
+# here we can filter on the time.. in number of weeks back
+# =====
 
 
-
-windows = ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']
-for w in windows:
-    t_time = B.loc[index_gpu, 'Time']
-    y = B.loc[index_gpu, i_name].rolling(28).mean()
-    y_smooth = smooth(y, 10, w)
-    len(y_smooth[:-9])
-    len(y)
-    plt.plot(y - y_smooth[:-9])
-    plt.plot(t_time, y, '-', label=w)
-    plt.legend()
-    plt.pause(5)
-plt.show()
+img_list[0].shape
+# ===================================
+# Experimenting with different smoothing functions. Did not do much
+# ===================================
+# windows = ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']
+# for w in windows:
+#     t_time = B.loc[index_gpu, 'Time']
+#     y = B.loc[index_gpu, i_name].rolling(28).mean()
+#     y_smooth = smooth(y, 10, w)
+#     len(y_smooth[:-9])
+#     len(y)
+#     plt.plot(y - y_smooth[:-9])
+#     plt.plot(t_time, y, '-', label=w)
+#     plt.legend()
+#     plt.pause(5)
+# plt.show()
 # B.loc[index_gpu, 'Time']
 #
 # for i in range(100):
 #     plt.close()
+
