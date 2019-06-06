@@ -1,22 +1,11 @@
 # encoding: utf-8
 
 """
-Here we are going to create functions that can plot the results of nvidia text..
-Can be used for a ... website?
+Here we create the plots from the nvidia_database.csv
 
-Dit is dus echt kut. Ik haaaat pandas ...
-Hopelijk kan t ook met numpy
+We can filter on time.
 
-Of plotted met pandas moet ik ff leren.
-En moet natuurlijk ff bedenkn hoe ik dit dan kan embedded in een html pagina..
-zou vet zijn als je pet plotly ofzo iets "interactiefs" kan doen.
-
-
-What we learned here is that nuympy is a piece of shit when you deal with datetime objects.
-Maybe I couldve used a different datetime thingybob but fuck that.
-I wanted datetime
-Now I need to use pnadas.
-FIne.
+Plots are saved automatically
 """
 
 import re
@@ -25,64 +14,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
-
-
-def smooth(x, window_len=11, window='hanning'):
-    """
-    https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html
-
-    smooth the data using a window with requested size.
-
-    This method is based on the convolution of a scaled window with the signal.
-    The signal is prepared by introducing reflected copies of the signal
-    (with the window size) in both ends so that transient parts are minimized
-    in the begining and end part of the output signal.
-
-    input:
-        x: the input signal
-        window_len: the dimension of the smoothing window; should be an odd integer
-        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
-            flat window will produce a moving average smoothing.
-
-    output:
-        the smoothed signal
-
-    example:
-
-    t=linspace(-2,2,0.1)
-    x=sin(t)+randn(len(t))*0.1
-    y=smooth(x)
-
-    see also:
-
-    numpy.hanning, numpy.hamming, numpy.bartlett, numpy.blackman, numpy.convolve
-    scipy.signal.lfilter
-
-    TODO: the window parameter could be the window itself if an array instead of a string
-    NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1):-(window_len/2)] instead of just y.
-    """
-
-    if x.ndim != 1:
-        raise ValueError("smooth only accepts 1 dimension arrays.")
-
-    if x.size < window_len:
-        raise ValueError("Input vector needs to be bigger than window size.")
-
-    if window_len < 3:
-        return x
-
-    if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-        raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
-
-    s = np.r_[x[window_len - 1:0:-1], x, x[-2:-window_len - 1:-1]]
-    # print(len(s))
-    if window == 'flat':  # moving average
-        w = np.ones(window_len, 'd')
-    else:
-        w = eval('np.' + window + '(window_len)')
-
-    y = np.convolve(w / w.sum(), s, mode='valid')
-    return y
+import matplotlib.dates as mdates
 
 
 # Choosing the right system
@@ -94,8 +26,10 @@ else:
 
 if windows_system:
     path_to_csv = r'C:\Users\20184098\Documents\data\nvidia'
+    path_to_plot = r'C:\Users\20184098\Pictures\pycharm\saruman'
 else:
     path_to_csv = '/home/charmmaria/data/nvidia'
+    path_to_plot = path_to_csv
 
 # Simple function definition
 divfun = lambda a: round(int(a[0])/int(a[1])*100)
@@ -144,7 +78,9 @@ B['Memory-Usage'] = A_mem_format
 
 # Define plotting cols and unique GPU ids
 plot_cols = ['Memory-Usage', 'Pwr:Usage/Cap', 'Temp', 'Fan']
-A_ugpu = list(set(A_gpu))
+plot_names = ['memory_usage', 'power_usage', 'temp', 'fan']
+A_ugpu = sorted(list(set(A_gpu)))
+
 
 # ====================
 # Plotting procedure
@@ -159,6 +95,7 @@ if filter_time:
 
 for i, i_name in enumerate(plot_cols):
 
+    # Collect data in one list
     img_list = []
     for i_gpu in A_ugpu:
         index_gpu = B['GPU'] == i_gpu
@@ -166,9 +103,9 @@ for i, i_name in enumerate(plot_cols):
         y = B.loc[index_gpu, i_name].rolling(28).mean()
         img_list.append(y)
 
+    # Filter on time.. since we dont want ALL the history.
     if filter_time:
-        import datetime
-        n_week = 3
+        n_week = 10
         neg_week = datetime.timedelta(weeks=n_week)
         zero_time = datetime.datetime.today() - neg_week
         t_time_ind = t_time >= zero_time
@@ -176,46 +113,27 @@ for i, i_name in enumerate(plot_cols):
         t_time = t_time[t_time_ind]
         img_list = [x.loc[t_time_ind.values] for x in img_list]
 
-    fig, ax_list = plt.subplots(ncols=3, num=i)
+    # Plot the (filtered) data
+    fig, ax_list = plt.subplots(ncols=3, num=i, figsize=(15, 10))
     fig.suptitle(i_name, fontsize=16)
-    subplot_counter = 0
-    min_value = int(np.min(img_list))
-    max_value = int(np.max(img_list))
+    #   Plot style properties
+    min_value = int(np.min(img_list)) - 5
+    max_value = int(np.max(img_list)) + 5
+    color_list = ['r', 'g', 'b']
 
-    for color, i_img in zip(['r', 'g', 'b'], img_list):
-        plot_name = 'GPU number' + A_ugpu[subplot_counter]
-        y_plot = img_list[subplot_counter]
+    for i_plot, i_img in enumerate(img_list):
+        plot_name = 'GPU number' + A_ugpu[i_plot]
+        y_plot = img_list[i_plot]
+        ax_temp = ax_list[i_plot]
+        xaxis_temp = ax_temp.get_xaxis()
 
-        ax_list[subplot_counter].plot(t_time, y_plot, color, label=plot_name)
-        ax_list[subplot_counter].set_ylim([min_value, max_value])
-        ax_list[subplot_counter].set_xticklabels(labels=t_time, rotation=45)
+        ax_temp.plot(t_time, y_plot, color_list[i_plot], label=plot_name)
+        ax_temp.set_xticklabels(labels=t_time, rotation=45)
+        ax_temp.set_ylim([min_value, max_value])
+        ax_temp.title.set_text(plot_name)
 
-        subplot_counter += 1
+        xaxis_temp.set_major_formatter(mdates.DateFormatter("%m-%d"))
+        xaxis_temp.set_major_locator(mdates.DayLocator(interval=7))
+
     fig.legend()
-
-# =====
-# here we can filter on the time.. in number of weeks back
-# =====
-
-
-img_list[0].shape
-# ===================================
-# Experimenting with different smoothing functions. Did not do much
-# ===================================
-# windows = ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']
-# for w in windows:
-#     t_time = B.loc[index_gpu, 'Time']
-#     y = B.loc[index_gpu, i_name].rolling(28).mean()
-#     y_smooth = smooth(y, 10, w)
-#     len(y_smooth[:-9])
-#     len(y)
-#     plt.plot(y - y_smooth[:-9])
-#     plt.plot(t_time, y, '-', label=w)
-#     plt.legend()
-#     plt.pause(5)
-# plt.show()
-# B.loc[index_gpu, 'Time']
-#
-# for i in range(100):
-#     plt.close()
-
+    plt.savefig(os.path.join(path_to_plot, plot_names[i] + '.png'))
