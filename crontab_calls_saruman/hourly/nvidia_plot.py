@@ -105,7 +105,7 @@ for i, i_name in enumerate(plot_cols):
 
     # Filter on time.. since we dont want ALL the history.
     if filter_time:
-        n_week = 10
+        n_week = 12
         neg_week = datetime.timedelta(weeks=n_week)
         zero_time = datetime.datetime.today() - neg_week
         t_time_ind = t_time >= zero_time

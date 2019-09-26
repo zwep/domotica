@@ -73,7 +73,7 @@ if __name__ == '__main__':
         path_to_text = parsed_arg.i
     else:
         if windows_system:
-            path_to_text = r'C:\Users\20184098\Documents\data\nvidia'
+            path_to_text = r'C:\Users\20184098\Documents\data\nvidia_boromir'
         else:
             path_to_text = '/home/charmmaria/data/nvidia'
 
