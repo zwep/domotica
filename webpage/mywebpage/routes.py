@@ -1,21 +1,21 @@
 from flask import Flask, render_template
 
-from pynetgear import Netgear
-import config
+# import config
 import re
 import os
 
 app = Flask(__name__)
-netgear = Netgear(password=os.environ['netgear_key'])
+# netgear = Netgear(password=os.environ['netgear_key'])
 name_list = ['seb', 'ella', 'ayla', 'barbara', 'noortje', 'joyce']
 
+#
+# def get_netgear():
+#     res_dict = []
+#     for i in netgear.get_attached_devices():
+#         temp_dict = dict(zip(i._fields, list(i)))
+#         res_dict.append(temp_dict)
+#     return res_dict
 
-def get_netgear():
-    res_dict = []
-    for i in netgear.get_attached_devices():
-        temp_dict = dict(zip(i._fields, list(i)))
-        res_dict.append(temp_dict)
-    return res_dict
 
 def parse_activity(name_list, netgear_dict):
 
@@ -39,5 +39,5 @@ def home():
     # netgear_dict = get_netgear()
     # print(netgear_dict)
     # opacity_list = parse_activity(name_list, netgear_dict)
-    opacity_list = [0.2, 1, 1, 0.2, 0.2 ,1]
+    opacity_list = [0.2, 1, 1, 0.2, 0.2, 1]
     return render_template('image_column.html', name_list=name_list, opacity_list=opacity_list)

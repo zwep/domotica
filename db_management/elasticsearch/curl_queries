@@ -1,0 +1,27 @@
+
+# Build of ES
+an Elasticsearch cluster is made up of one or more nodes.
+    Each of these nodes contains indexes
+        which are split into multiple shards.
+        Elasticsearch makes copies of these shards called replicas.
+
+These (primary) shards and replicas are then placed on various nodes throughout the cluster.
+
+
+# Here are some examples on how to get info via curl/ES
+
+
+
+### Get indices
+curl 'localhost:9200/_cat/indices?v'
+
+### Get mappings in index
+curl -XGET 'http://localhost:9200/_mapping?pretty=true'
+
+### Get status of the whole cluster
+curl -XGET http://localhost:9200/_cluster/health?pretty=true
+
+### Example query
+curl -XGET "http://localhost:9200/dutch_news/_search?q=title:'martina'"
+
+
