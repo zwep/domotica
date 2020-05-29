@@ -15,7 +15,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 import matplotlib.dates as mdates
-
+from matplotlib.pyplot import cm
 
 # Choosing the right system
 file_name = 'nvidia_database.csv'
@@ -28,7 +28,9 @@ if windows_system:
     path_to_csv = r'C:\Users\20184098\Documents\data\nvidia'
     path_to_plot = r'C:\Users\20184098\Pictures\pycharm\saruman'
 else:
-    path_to_csv = '/home/charmmaria/data/nvidia'
+    #path_to_csv = '/home/charmmaria/data/nvidia'
+    # path_to_csv = '/home/bugger/Documents/data/nvidia_saruman'
+    path_to_csv = '/home/bugger/Documents/data/nvidia_boromir'
     path_to_plot = path_to_csv
 
 # Simple function definition
@@ -63,17 +65,20 @@ B['Temp'] = A_temp_format
 
 # Format Pwr
 A_pwr = A[:, A_col['Pwr:Usage/Cap']]
-A_pwr_format = np.array([divfun(re.findall("([0-9]*)W/([0-9]*)W", x)[0]) for x in A_pwr])
+A_pwr_format = np.array([divfun(re.findall("(-[0-9]*|[0-9]*)W/(-[0-9]*|[0-9]*)W", x)[0]) for x in A_pwr])
+np.argmin(A_pwr_format)
 B['Pwr:Usage/Cap'] = A_pwr_format
 
 # Format Fan
 A_fan = A[:, A_col['Fan']]
-A_fan_format = np.array([int(x[:-1]) for x in A_fan])
+A_fan_format = np.array([int(x[:-1]) if x[:-1].isdigit() else -10 for x in A_fan])  ## Checken
+# (A_fan_format == 150).sum()
 B['Fan'] = A_fan_format
+# (B['Fan'] == 150).sum()
 
 # Format Mem-Usage
 A_mem = A[:, A_col['Memory-Usage']]
-A_mem_format = np.array([divfun(re.findall("([0-9]*)MiB/([0-9]*)MiB", x)[0]) for x in A_mem])
+A_mem_format = np.array([divfun(re.findall("(-[0-9]*|[0-9]*)MiB/(-[0-9]*|[0-9]*)MiB", x)[0]) for x in A_mem])
 B['Memory-Usage'] = A_mem_format
 
 # Define plotting cols and unique GPU ids
@@ -89,7 +94,7 @@ A_ugpu = sorted(list(set(A_gpu)))
 # Display the things...
 # Bar plots are insanely annoing. Need a test case of some sort to explore this..
 filter_time = True
-
+plt.close('all')
 if filter_time:
     print('We are filtering on time!!')
 
@@ -100,7 +105,8 @@ for i, i_name in enumerate(plot_cols):
     for i_gpu in A_ugpu:
         index_gpu = B['GPU'] == i_gpu
         t_time = B.loc[index_gpu, 'Time']
-        y = B.loc[index_gpu, i_name].rolling(28).mean()
+        # y = B.loc[index_gpu, i_name].rolling(28).mean()
+        y = B.loc[index_gpu, i_name]
         img_list.append(y)
 
     # Filter on time.. since we dont want ALL the history.
@@ -109,17 +115,18 @@ for i, i_name in enumerate(plot_cols):
         neg_week = datetime.timedelta(weeks=n_week)
         zero_time = datetime.datetime.today() - neg_week
         t_time_ind = t_time >= zero_time
-
         t_time = t_time[t_time_ind]
         img_list = [x.loc[t_time_ind.values] for x in img_list]
 
     # Plot the (filtered) data
-    fig, ax_list = plt.subplots(ncols=3, num=i, figsize=(15, 10))
+    fig, ax_list = plt.subplots(ncols=len(img_list), num=i, figsize=(15, 10))
     fig.suptitle(i_name, fontsize=16)
     #   Plot style properties
     min_value = int(np.min(img_list)) - 5
     max_value = int(np.max(img_list)) + 5
-    color_list = ['r', 'g', 'b']
+    print(i_name, max_value)
+    # color_list = ['r', 'g', 'b']
+    color_list = cm.rainbow(np.linspace(0, 1, len(img_list)))
 
     for i_plot, i_img in enumerate(img_list):
         plot_name = 'GPU number' + A_ugpu[i_plot]
@@ -127,7 +134,7 @@ for i, i_name in enumerate(plot_cols):
         ax_temp = ax_list[i_plot]
         xaxis_temp = ax_temp.get_xaxis()
 
-        ax_temp.plot(t_time, y_plot, color_list[i_plot], label=plot_name)
+        ax_temp.plot(t_time, y_plot, c=color_list[i_plot], label=plot_name)
         ax_temp.set_xticklabels(labels=t_time, rotation=45)
         ax_temp.set_ylim([min_value, max_value])
         ax_temp.title.set_text(plot_name)

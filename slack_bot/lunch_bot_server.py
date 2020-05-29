@@ -60,4 +60,3 @@ def message_actions():
     )
 
     return make_response("", 200)
-~
