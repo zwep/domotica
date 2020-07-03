@@ -55,5 +55,9 @@ ydl_opts = {
 
 if __name__ == "__main__":
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        filenames = 'https://www.youtube.com/watch?v=dNpILrLUvKs&list=PLscv4NA0bNSOWYDILwQPuXURMVkSaGuEU'
+        # filenames = 'https://www.youtube.com/watch?v=dNpILrLUvKs&list=PLscv4NA0bNSOWYDILwQPuXURMVkSaGuEU'
+        # filenames = 'https://www.youtube.com/watch?v=IihEXA88GyI&list=RD12zcvCdtp4Q'
+        # filenames = 'https://www.youtube.com/watch?v=IihEXA88GyI'
+        filenames = 'https://www.youtube.com/watch?v=ImllpvDwbQ8'
+        filenames = 'https://www.youtube.com/watch?v=jPeheoBa2_Y'
         ydl.download([filenames])
