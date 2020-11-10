@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import pprint
-from Toon import Toon
+from toon import Toon
 import requests
 import domotica_config as cnf
 

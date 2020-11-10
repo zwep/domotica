@@ -113,7 +113,7 @@ Example
 ====
 
 ```python
-from Toon import Toon
+from toon import Toon
 
 username = "YOURTOONUSERNAME"
 password = "YOURTOONPASSWORD"

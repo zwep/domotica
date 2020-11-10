@@ -10,6 +10,7 @@ download_mp3_list = ['https://content.production.cdn.art19.com/validation=158807
 'https://content.production.cdn.art19.com/validation=1588072212,10ae9c59-b55b-56a1-9786-2cdb223c91fb,2pz159BR2HdM25Ci4GlkZfcSGFk/episodes/56f1ace4-4046-4f85-be28-d56ae0d15ee4/4838b35d1d83396dfe39ce26e207787852876f09745282e6897497100b6d1eef9d4270c22c6891436358fd639f103d129f56a699f632342c00a387fda1f8d5c0/OA41%20ijstijden2.mp3',
 'https://content.production.cdn.art19.com/validation=1588072233,dfc287f2-54ad-55bb-8764-7469848be7a5,TbYtG_B2iCCRo1MvybZ0ACMuE88/episodes/90b42ca3-1e2f-4095-8b15-0da56f320d86/77fdcf8c9ada551625f6c11ea3f0a785e946b8b972b83f9e002a20adc1f43ea7a51d939ab0dd1c8248dbbec859699d6057b1028d429b64f10fc0275a0ce72ee1/NRC%20Onbehaarde%20Apen%20%2312%20Het%20zelf.mp3']
 
+
 for i, i_url in enumerate(download_mp3_list):
     file_name = os.path.basename(i_url)
     res = requests.get(i_url)
@@ -21,20 +22,35 @@ for i, i_url in enumerate(download_mp3_list):
     time.sleep(60)
 
 # Onbehaarde apen
-download_mp3 = 'https://content.production.cdn.art19.com/validation=1587733954,11e708a5-1112-5785-ba99-865d48dfb25b,jug8R1rfO3DERVt-BjJL72ut5WI/episodes/11dddd02-e9c9-4f56-92b1-0309b7f0c07f/2b99cc9696c5a7c838fe6f7242e61548b6d10e477787d52dbb71bc0fcb7d81c79163d90a6ffeaeec472d59b22432c1abce51259e939a6041880ab6034afffb2d/%2390%3A%20Waar%20is%20alle%20antimaterie%20gebleven%3F.mp3'
-# Jordan Peterson
-# https://www.jordanbpeterson.com/podcast/s3-e2-biblical-series-genesis-1-chaos-order/
-download_mp3 = 'https://dcs.megaphone.fm/WWO7094747788.mp3?key=5d135a0edecec67785d9126c44ee21fc'
-download_mp3 = 'https://dcs.megaphone.fm/WWO6317272315.mp3?key=6b463d7fd933c26b12bb7cfb24dcc35d'
+# download_mp3 = 'https://content.production.cdn.art19.com/validation=1587733954,11e708a5-1112-5785-ba99-865d48dfb25b,jug8R1rfO3DERVt-BjJL72ut5WI/episodes/11dddd02-e9c9-4f56-92b1-0309b7f0c07f/2b99cc9696c5a7c838fe6f7242e61548b6d10e477787d52dbb71bc0fcb7d81c79163d90a6ffeaeec472d59b22432c1abce51259e939a6041880ab6034afffb2d/%2390%3A%20Waar%20is%20alle%20antimaterie%20gebleven%3F.mp3'
+# # download_mp3_list = ["https://rss.art19.com/episodes/bd537d3b-0b4d-4b95-b33f-acf6355d948e.mp3"]
+#
+# # Jordan Peterson
+# # https://www.jordanbpeterson.com/podcast/s3-e2-biblical-series-genesis-1-chaos-order/
+# download_mp3 = 'https://dcs.megaphone.fm/WWO7094747788.mp3?key=5d135a0edecec67785d9126c44ee21fc'
+# download_mp3 = 'https://dcs.megaphone.fm/WWO6317272315.mp3?key=6b463d7fd933c26b12bb7cfb24dcc35d'
 
-file_name = os.path.basename(download_mp3)
-res = requests.get(download_mp3)
-print('Status code', res.status_code)
-if res.status_code == 200:
-    with open('/home/bugger/Music/' + file_name, 'wb') as f:
-        f.write(res.content)
+# onbeharde apen
+# download_mp3_list = ["https://rss.art19.com/episodes/e33ce577-efcb-4de2-b1ef-f5977667123a.mp3",
+# "https://rss.art19.com/episodes/c5a5605f-5259-4d48-93ee-8a5973fb7bdb.mp3",
+# "https://rss.art19.com/episodes/9a6380aa-2d02-4054-bf3a-2eee7a0531a1.mp3",
+# "https://rss.art19.com/episodes/586b9193-6a50-42cc-a3cc-56c9ccbe359f.mp3"]
 
-time.sleep(60)
+# onbeharde apen
+download_mp3_list = ["https://rss.art19.com/episodes/2ca2c11b-df9b-449a-a590-e132668b60a5.mp3",
+                     "https://rss.art19.com/episodes/b4ceb473-89de-461b-8501-0a691909d34c.mp3",
+                     "https://rss.art19.com/episodes/6611a2dc-bda0-47e9-ad15-ef12584ea649.mp3"]
+
+
+for download_mp3 in download_mp3_list:
+    file_name = os.path.basename(download_mp3)
+    print(file_name)
+    res = requests.get(download_mp3)
+    print('Status code', res.status_code)
+    if res.status_code == 200:
+        with open('/home/bugger/Music/' + file_name, 'wb') as f:
+            f.write(res.content)
+    time.sleep(60)
 
 # Get youtube mp3
 
@@ -54,10 +70,14 @@ ydl_opts = {
 
 
 if __name__ == "__main__":
+    # filenames = 'https://www.youtube.com/watch?v=dNpILrLUvKs&list=PLscv4NA0bNSOWYDILwQPuXURMVkSaGuEU'
+    # filenames = 'https://www.youtube.com/watch?v=IihEXA88GyI&list=RD12zcvCdtp4Q'
+    # filenames = 'https://www.youtube.com/watch?v=IihEXA88GyI'
+    # filenames = 'https://www.youtube.com/watch?v=ImllpvDwbQ8'
+    # filenames = 'https://www.youtube.com/watch?v=jPeheoBa2_Y'
+    # filenames = 'https://www.youtube.com/watch?v=mPymRFeTJa4'
+    # filenames = 'https://www.youtube.com/watch?v=MqKVvaCN5M8&list=PLZqsyBiYZFQ3AGsUA-Y2uETjMxzAkyq8q'
+    # filenames = 'https://www.youtube.com/watch?v=6cUdOo26YV8'
+    filenames = 'https://www.youtube.com/watch?v=TYFoQwL5HAw&list=PL10d-p2PLQ-JBId_a6ZPxYdDaeWDu5001'
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        # filenames = 'https://www.youtube.com/watch?v=dNpILrLUvKs&list=PLscv4NA0bNSOWYDILwQPuXURMVkSaGuEU'
-        # filenames = 'https://www.youtube.com/watch?v=IihEXA88GyI&list=RD12zcvCdtp4Q'
-        # filenames = 'https://www.youtube.com/watch?v=IihEXA88GyI'
-        filenames = 'https://www.youtube.com/watch?v=ImllpvDwbQ8'
-        filenames = 'https://www.youtube.com/watch?v=jPeheoBa2_Y'
         ydl.download([filenames])

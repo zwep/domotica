@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 """
-The Toon module impersonates the Eneco Toon mobile app, and implements
+The toon module impersonates the Eneco toon mobile app, and implements
 similar functionality.
 Most part of the code is not written by me, but by:
 Robert van der Meulen: https://github.com/rvdm
@@ -18,7 +18,7 @@ import time
 
 
 class Toon:
-    """ Log in to the Toon API, and do stuff. """
+    """ Log in to the toon API, and do stuff. """
     def __init__(self, username, password):
         self.username = username
         self.password = password
