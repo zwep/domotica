@@ -1,3 +1,10 @@
+"""
+
+Image enhancement using Bi-Histogram Equalization with adaptive sigmoid functions
+
+Edgar F. Arriaga-Garcia; Raul E. Sanchez-Yanez; M. G. Garcia-Hernande
+
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 import skimage.data as data
