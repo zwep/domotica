@@ -35,12 +35,17 @@ def parse_raw_to_csv(input_file):
     with open(input_file, 'r') as f:
         a_text = f.read()
 
-    input_file = '/home/charmmaria/data/top_rawtext/2018_10_18_rawfile.txt'
-
+    # input_file = '/home/charmmaria/data/top_rawtext/2018_10_18_rawfile.txt'
+    # input_file = i_file
+    # input_file = list_files[0]
     raw_date = re.findall("([0-9]{4}_[0-9]{2}_[0-9]{2})_rawfile.txt", input_file)
     # print(raw_date)
     parsed_text = [x.split('\n') for x in a_text.split('TIMESTAMP: ')]
-    sel_text = parsed_text[1]
+    # Select columns if there is PID in any of the elements...
+    sel_text = [x for x in parsed_text if 'PID' in ''.join(x)]
+    # Then use one selected piece of text to extract the column names
+    example_output = [x for x in sel_text if 'PID' in ''.join(x)][0]
+    str_colname = example_output[1].split()
     hourly_data = []
 
     for i_text_stamp in parsed_text:
@@ -50,9 +55,8 @@ def parse_raw_to_csv(input_file):
         str_values = [[i_datestamp] + x.split() for x in raw_str_values]
         hourly_data.extend(str_values)
 
-    hourly_data = [x for x in hourly_data if len(x)>1]
-    # Use one selected piece of text to extract the column names
-    str_colname = [x for x in sel_text if 'PID' in x][0].split()
+    hourly_data = [x for x in hourly_data if len(x) > 1]
+
     # We need to ditch the last one like this.. because it has a space we can fix easily.
     col_names = ['Time'] + str_colname
     n_col = len(col_names)
@@ -66,7 +70,7 @@ if __name__ == '__main__':
         path_to_text = parsed_arg.i
     else:
         path_to_text = ''
-        path_to_text = '/home/charmmaria/data/top'
+        path_to_text = '/home/bugger/Documents/data/top'
 
     daily_data = []
     list_files = [os.path.join(path_to_text, x) for x in os.listdir(path_to_text) if x.endswith('rawfile.txt')]
@@ -84,4 +88,4 @@ if __name__ == '__main__':
     csv_filename = os.path.join(path_to_text, 'top_database.csv')
     A = pd.DataFrame(daily_data)
     A.columns = col_names
-    A.to_csv(csv_filename, index=False)
+    A.to_csv(csv_filename, index=False, sep='#')

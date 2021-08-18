@@ -29,8 +29,8 @@ if windows_system:
     path_to_plot = r'C:\Users\20184098\Pictures\pycharm\saruman'
 else:
     #path_to_csv = '/home/charmmaria/data/nvidia'
-    # path_to_csv = '/home/bugger/Documents/data/nvidia_saruman'
-    path_to_csv = '/home/bugger/Documents/data/nvidia_boromir'
+    path_to_csv = '/home/bugger/Documents/data/nvidia_saruman'
+    # path_to_csv = '/home/bugger/Documents/data/nvidia_boromir'
     path_to_plot = path_to_csv
 
 # Simple function definition
@@ -65,8 +65,8 @@ B['Temp'] = A_temp_format
 
 # Format Pwr
 A_pwr = A[:, A_col['Pwr:Usage/Cap']]
-A_pwr_format = np.array([divfun(re.findall("(-[0-9]*|[0-9]*)W/(-[0-9]*|[0-9]*)W", x)[0]) for x in A_pwr])
-np.argmin(A_pwr_format)
+A_pwr_format = np.array([divfun(re.findall("(-[0-9]*|[0-9]*)W/(-[0-9]*|[0-9]*)W", x)[0]) if x else -10 for x in A_pwr])
+# np.argmin(A_pwr_format)
 B['Pwr:Usage/Cap'] = A_pwr_format
 
 # Format Fan
@@ -78,7 +78,7 @@ B['Fan'] = A_fan_format
 
 # Format Mem-Usage
 A_mem = A[:, A_col['Memory-Usage']]
-A_mem_format = np.array([divfun(re.findall("(-[0-9]*|[0-9]*)MiB/(-[0-9]*|[0-9]*)MiB", x)[0]) for x in A_mem])
+A_mem_format = np.array([divfun(re.findall("(-[0-9]*|[0-9]*)MiB/(-[0-9]*|[0-9]*)MiB", x)[0]) if x else -10 for x in A_mem])
 B['Memory-Usage'] = A_mem_format
 
 # Define plotting cols and unique GPU ids
@@ -98,49 +98,62 @@ plt.close('all')
 if filter_time:
     print('We are filtering on time!!')
 
+# The amount of GPUs we are going to analyse..
+sel_gpu = A_ugpu[:3]
+n_gpu = len(sel_gpu)
 for i, i_name in enumerate(plot_cols):
+    print('Processing quantity ', i_name)
 
-    # Collect data in one list
+    # Create figures
+    fig, ax_list = plt.subplots(ncols=n_gpu, num=i, figsize=(30, 10))
+    fig.suptitle(i_name, fontsize=16)
+    color_list = cm.rainbow(np.linspace(0, 1, n_gpu))
+
+    # Collect data in one list for all the GPUs
     img_list = []
-    for i_gpu in A_ugpu:
+    for i_index, i_gpu in enumerate(A_ugpu[:3]):
+        plot_name = 'GPU number' + i_gpu
+        ax_temp = ax_list[i_index]
+        xaxis_temp = ax_temp.get_xaxis()
+
         index_gpu = B['GPU'] == i_gpu
         t_time = B.loc[index_gpu, 'Time']
         # y = B.loc[index_gpu, i_name].rolling(28).mean()
         y = B.loc[index_gpu, i_name]
+
+        # Filter on time.. since we dont want ALL the history.
+        if filter_time:
+            n_week = 2
+            neg_week = datetime.timedelta(weeks=n_week)
+            zero_time = datetime.datetime.today() - neg_week
+            index_time = t_time >= zero_time
+            t_time = t_time[index_time]
+            y = y.iloc[index_time.values]
+            print('Filtering on time, nr of points ', len(index_time))
+
         img_list.append(y)
 
-    # Filter on time.. since we dont want ALL the history.
-    if filter_time:
-        n_week = 12
-        neg_week = datetime.timedelta(weeks=n_week)
-        zero_time = datetime.datetime.today() - neg_week
-        t_time_ind = t_time >= zero_time
-        t_time = t_time[t_time_ind]
-        img_list = [x.loc[t_time_ind.values] for x in img_list]
+        #   Plot style properties
+        min_value = int(min([min(x) for x in img_list])) - 5
+        max_value = int(max([max(x) for x in img_list])) + 5
+        print(i_name, 'min/max range:', min_value, max_value)
 
-    # Plot the (filtered) data
-    fig, ax_list = plt.subplots(ncols=len(img_list), num=i, figsize=(15, 10))
-    fig.suptitle(i_name, fontsize=16)
-    #   Plot style properties
-    min_value = int(np.min(img_list)) - 5
-    max_value = int(np.max(img_list)) + 5
-    print(i_name, max_value)
-    # color_list = ['r', 'g', 'b']
-    color_list = cm.rainbow(np.linspace(0, 1, len(img_list)))
+        y_plot = img_list[i_index]
+        ax_temp.plot(t_time, y_plot, c=color_list[i_index], label=plot_name)
+        ax_temp.scatter(t_time[y_plot == -10], y_plot[y_plot == -10], marker='*', c='k', zorder=10)
+        # Show
+        # ticks_loc = ax_temp.get_xticks().tolist()
+        # ax_temp.set_xticks(ax_temp.get_xticks().tolist())
+        # ax_temp.set_xticklabels([x for x in ticks_loc])
 
-    for i_plot, i_img in enumerate(img_list):
-        plot_name = 'GPU number' + A_ugpu[i_plot]
-        y_plot = img_list[i_plot]
-        ax_temp = ax_list[i_plot]
-        xaxis_temp = ax_temp.get_xaxis()
-
-        ax_temp.plot(t_time, y_plot, c=color_list[i_plot], label=plot_name)
-        ax_temp.set_xticklabels(labels=t_time, rotation=45)
+        # OLD: ax_temp.set_xticklabels(labels=t_time)
+        plt.setp(ax_temp.get_xticklabels(), ha="right", rotation=45)
         ax_temp.set_ylim([min_value, max_value])
         ax_temp.title.set_text(plot_name)
 
-        xaxis_temp.set_major_formatter(mdates.DateFormatter("%m-%d"))
+        xaxis_temp.set_major_formatter(mdates.DateFormatter("%m-%d-%Y"))
         xaxis_temp.set_major_locator(mdates.DayLocator(interval=7))
 
     fig.legend()
     plt.savefig(os.path.join(path_to_plot, plot_names[i] + '.png'))
+

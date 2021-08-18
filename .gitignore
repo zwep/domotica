@@ -14,6 +14,8 @@ api_secrets.py
 # pycharm stuff
 .idea
 venv
+venv2
+./venv2
 ./venv
 
 

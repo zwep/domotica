@@ -11,6 +11,7 @@ download_mp3_list = ['https://content.production.cdn.art19.com/validation=158807
 'https://content.production.cdn.art19.com/validation=1588072233,dfc287f2-54ad-55bb-8764-7469848be7a5,TbYtG_B2iCCRo1MvybZ0ACMuE88/episodes/90b42ca3-1e2f-4095-8b15-0da56f320d86/77fdcf8c9ada551625f6c11ea3f0a785e946b8b972b83f9e002a20adc1f43ea7a51d939ab0dd1c8248dbbec859699d6057b1028d429b64f10fc0275a0ce72ee1/NRC%20Onbehaarde%20Apen%20%2312%20Het%20zelf.mp3']
 
 
+
 for i, i_url in enumerate(download_mp3_list):
     file_name = os.path.basename(i_url)
     res = requests.get(i_url)
@@ -40,6 +41,7 @@ for i, i_url in enumerate(download_mp3_list):
 download_mp3_list = ["https://rss.art19.com/episodes/2ca2c11b-df9b-449a-a590-e132668b60a5.mp3",
                      "https://rss.art19.com/episodes/b4ceb473-89de-461b-8501-0a691909d34c.mp3",
                      "https://rss.art19.com/episodes/6611a2dc-bda0-47e9-ad15-ef12584ea649.mp3"]
+download_mp3_list = ["https://d1ukfmmao1s9m3.cloudfront.net/dr1594565552000/002_College_1_Hoofdstuk_1_Inleiding__adeldom_dankzij_voorvaderen_of_door_eigen_verdiensten.mp3?Policy=eyJTdGF0ZW1lbnQiOiBbeyJSZXNvdXJjZSI6Imh0dHBzOi8vZDF1a2ZtbWFvMXM5bTMuY2xvdWRmcm9udC5uZXQvZHIxNTk0NTY1NTUyMDAwLzAwMl9Db2xsZWdlXzFfSG9vZmRzdHVrXzFfSW5sZWlkaW5nX19hZGVsZG9tX2Rhbmt6aWpfdm9vcnZhZGVyZW5fb2ZfZG9vcl9laWdlbl92ZXJkaWVuc3Rlbi5tcDMiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2MTQwOTE5MDh9fX1dfQ__&Signature=XCgPC6lRr3ym3x5JyXIGtfKqjzmbnYxCgIXozWnGAxi86LdL5alWx0Msgtcmg7tPQN1dKlb3cgE2d-QahkbotyBWtft-UxxogJc-TeK91f959wRUH5w8fHCYO5tKdjsLCnKREDt0T9d3wHrmpjn8uKcBAsUsWw2FF-pcSBaBjkU_&Key-Pair-Id=APKAIKX2OHEK7X2QLNZA"]
 
 
 for download_mp3 in download_mp3_list:
@@ -47,6 +49,7 @@ for download_mp3 in download_mp3_list:
     print(file_name)
     res = requests.get(download_mp3)
     print('Status code', res.status_code)
+    file_name = file_name[:file_name.index('?')]
     if res.status_code == 200:
         with open('/home/bugger/Music/' + file_name, 'wb') as f:
             f.write(res.content)
@@ -64,9 +67,9 @@ ydl_opts = {
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',
-        'preferredquality': '192',
     }],
 }
+#  'preferredquality': '192',
 
 
 if __name__ == "__main__":
@@ -78,6 +81,11 @@ if __name__ == "__main__":
     # filenames = 'https://www.youtube.com/watch?v=mPymRFeTJa4'
     # filenames = 'https://www.youtube.com/watch?v=MqKVvaCN5M8&list=PLZqsyBiYZFQ3AGsUA-Y2uETjMxzAkyq8q'
     # filenames = 'https://www.youtube.com/watch?v=6cUdOo26YV8'
-    filenames = 'https://www.youtube.com/watch?v=TYFoQwL5HAw&list=PL10d-p2PLQ-JBId_a6ZPxYdDaeWDu5001'
+    # filenames = 'https://www.youtube.com/watch?v=TYFoQwL5HAw&list=PL10d-p2PLQ-JBId_a6ZPxYdDaeWDu5001'
+    filenames = 'https://www.youtube.com/watch?v=nUBWUcSKBAc&list=PLcKCG4I2klHax42oaKlXyrlCl9iWI30od'
+    filenames = 'https://www.youtube.com/watch?v=cD_vUV0n9vc&list=PLXNzhHCkUWiVeyPV-zt6W0K8QUMrJN9WA'
+    filenames = 'https://www.youtube.com/watch?v=sWKDf6ggPjM&ab_channel=VrtRadio1'
+    #
+    filenames = 'https://www.youtube.com/watch?v=v55AH2_jhvk'
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([filenames])

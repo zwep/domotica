@@ -41,7 +41,7 @@ def parse_raw_to_csv(input_file):
     with open(input_file, 'r') as f:
         a_text = f.read()
 
-    # input_file = '/home/charmmaria/data/nvidia_rawtext/2018_10_18_rawfile.txt'
+    # input_file = '/home/bugger/Documents/data/nvidia_saruman/2018_10_18_rawfile.txt'
 
     raw_date = re.findall("([0-9]{4}_[0-9]{2}_[0-9]{2})_rawfile.txt", input_file)
     # print(raw_date)
@@ -66,13 +66,18 @@ def parse_raw_to_csv(input_file):
 
     # Extract a representative piece of text that contains raw text from nvidia-smi
     # Make sure to avoid error messages, or empty messages. This is done by demanding a certain length (now 30)
-    sel_text = [x for x in parsed_text if len(x) > 30][0]
+    sel_text = [x for x in parsed_text if len(x) > 25]
+    if sel_text:
+        sel_text = sel_text[0]
 
-    # Use one selected piece of text to extract the column names. We know that if the name 'Fan' is in there,
-    # the other column names will be there as well
-    str_colname = [x for x in sel_text if 'Fan' in x][0]
-    # We need to ditch the last one like this.. because it has a space we can fix easily.
-    col_names = [['Time', 'GPU'] + re.sub(' / ', '/', re.sub('\|', '', str_colname)).split()[:-1]]
+        # Use one selected piece of text to extract the column names. We know that if the name 'Fan' is in there,
+        # the other column names will be there as well
+        str_colname = [x for x in sel_text if 'Fan' in x][0]
+        # We need to ditch the last one like this.. because it has a space we can fix easily.
+        col_names = [['Time', 'GPU'] + re.sub(' / ', '/', re.sub('\|', '', str_colname)).split()[:-1]]
+    else:
+        col_names = None
+        hourly_data = []
 
     return col_names, hourly_data
 
@@ -82,12 +87,12 @@ if __name__ == '__main__':
         path_to_text = parsed_arg.i
     else:
         if windows_system:
-            path_to_text = r'C:\Users\20184098\Documents\data\nvidia_boromir'
+            path_to_text = r'C:\Users\20184098\Documents\data\nvidia'
         else:
             # path_to_text = '/home/charmmaria/data/nvidia'
             # path_to_text = '/home/charmmaria/data/nvidia'
-            path_to_text = '/home/bugger/Documents/data/nvidia_boromir'
-            # path_to_text = '/home/bugger/Documents/data/nvidia_saruman'
+            # path_to_text = '/home/bugger/Documents/data/nvidia'
+            path_to_text = '/home/bugger/Documents/data/nvidia_saruman'
 
     daily_data = []
     list_files = [os.path.join(path_to_text, x) for x in os.listdir(path_to_text) if x.endswith('rawfile.txt')]
