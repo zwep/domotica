@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import helper.array_transf as harray
 
 ddata = '/home/bugger/Pictures/wijnfleswit.jpeg'
-dtarget= '/home/bugger/Pictures/wijnfleswitmask.svg'
+dtarget = '/home/bugger/Pictures/wijnfleswitmask.svg'
 dtarget_png = '/home/bugger/Pictures/wijnfleswitmask.png'
 pil_obj = Image.open(ddata)
 A = np.array(pil_obj)
@@ -30,6 +30,16 @@ dtarget= '/home/bugger/Pictures/dirk_auto_unitmask.svg'
 dtarget_png = '/home/bugger/Pictures/dirk_auto_unitmask.png'
 pil_obj = Image.open(ddata)
 A = np.array(pil_obj)
-plt.imshow(A[:, :, 0] < 170)
+B = A[:, :, 0] < 170
+plt.imshow(B)
 plt.imshow(A[:, :, 1])
 plt.imshow(A[:, :, 2])
+
+
+fig, ax = plt.subplots()
+aximshow = plt.imshow(B)
+ax.set_axis_off()
+fig.savefig(dtarget, bbox_inches='tight')
+
+img_obj = Image.fromarray(255 * B.astype(np.uint8))
+img_obj.save(dtarget_png)

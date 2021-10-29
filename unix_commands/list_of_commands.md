@@ -8,6 +8,11 @@ A way to connect to a remote address
 ssh USERNAME@ADRES 
 ```
 
+Easy way to copy your ssh key to a new server
+```bash
+cp $HOME/.ssh/id_rsa.pub user@address:~/.ssh/authorized_keys
+```
+
 A way to send stuff to a remote address
 ```bash
 scp /path/to/file USERNAME@location:/path/to/dest
