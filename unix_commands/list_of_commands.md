@@ -171,3 +171,30 @@ If you want to move a set of documents, that satisfy a certain collective regex 
  ➜  find . -name "REGEXPATTERN" | xargs mv -t path/to/your/destination
 ```
 
+## Running background tasks
+
+Here we will explain often used commands to run tasks in the background
+
+# screens
+
+# tmux
+
+To start a session
+```bash
+tmux new -s 'session name'
+```
+
+To attach a session
+```bash
+tmux attach -t `session name
+```
+
+To detach when in a session
+```
+Ctrl+B+D
+```
+
+To remove/kill all sessions
+```bash
+tmux list-sessions | grep -v attached | awk 'BEGIN{FS=":"}{print $1}' | xargs -n 1 tmux kill-session -t || echo No sessions to kill
+```

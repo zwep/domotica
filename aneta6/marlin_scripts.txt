@@ -1,0 +1,21 @@
+//// Script to set the z-offset. Make sure that you heat your hotend!
+
+M851 Z0
+M500
+G28
+G1 Z0
+M211 S0
+// Now use a paper to adjust the height to a tight fit with
+G1 Z-X.X
+// After successful iterations, store the Z-offset
+M851 Z-X.X
+M211 S1
+M500
+
+//// Dont forget to turn off your hotend
+
+//// Calibrating PID for the extruder number 1 for 10 iterations
+M303 E0 S190 C10
+// Then store the obtain values by:
+M301 P19.72 I1.13 D85.99
+M500

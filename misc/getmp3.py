@@ -81,11 +81,17 @@ if __name__ == "__main__":
     # filenames = 'https://www.youtube.com/watch?v=mPymRFeTJa4'
     # filenames = 'https://www.youtube.com/watch?v=MqKVvaCN5M8&list=PLZqsyBiYZFQ3AGsUA-Y2uETjMxzAkyq8q'
     # filenames = 'https://www.youtube.com/watch?v=6cUdOo26YV8'
-    # filenames = 'https://www.youtube.com/watch?v=TYFoQwL5HAw&list=PL10d-p2PLQ-JBId_a6ZPxYdDaeWDu5001'
-    filenames = 'https://www.youtube.com/watch?v=nUBWUcSKBAc&list=PLcKCG4I2klHax42oaKlXyrlCl9iWI30od'
-    filenames = 'https://www.youtube.com/watch?v=cD_vUV0n9vc&list=PLXNzhHCkUWiVeyPV-zt6W0K8QUMrJN9WA'
-    filenames = 'https://www.youtube.com/watch?v=sWKDf6ggPjM&ab_channel=VrtRadio1'
-    #
-    filenames = 'https://www.youtube.com/watch?v=v55AH2_jhvk'
+    # # filenames = 'https://www.youtube.com/watch?v=TYFoQwL5HAw&list=PL10d-p2PLQ-JBId_a6ZPxYdDaeWDu5001'
+    # filenames = 'https://www.youtube.com/watch?v=nUBWUcSKBAc&list=PLcKCG4I2klHax42oaKlXyrlCl9iWI30od'
+    # filenames = 'https://www.youtube.com/watch?v=cD_vUV0n9vc&list=PLXNzhHCkUWiVeyPV-zt6W0K8QUMrJN9WA'
+    # filenames = 'https://www.youtube.com/watch?v=sWKDf6ggPjM&ab_channel=VrtRadio1'
+    # #
+    # filenames = 'https://www.youtube.com/watch?v=v55AH2_jhvk'
+    # filenames = 'https://www.youtube.com/watch?v=tXsQJhoauxc'
+    # filenames='https://www.youtube.com/watch?v=wNyRJMofPzA'
+    # filenames = 'https://www.youtube.com/watch?v=9TbG7cbXYSA&list=PLTQdMkca3BJjdPiVOk03RsYGz2P4i6cLx'
+    # filenames = 'https://www.youtube.com/watch?v=oDXvy7rMXeo'
+    # filenames = 'https://www.youtube.com/watch?v=zvsGNVb_7T0'
+    filenames = 'https://www.youtube.com/watch?v=jI4sPfOfOa8'
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([filenames])
