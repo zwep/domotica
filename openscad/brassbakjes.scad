@@ -18,12 +18,12 @@ bottom_height = 2;
 wall_thickness = 2;
 // This is the width WITH sleeves
 // It is in agreement with the /Retail-Sleeved-Cards.scad
-width = 67 + 2*wall_thickness;
+width = 67 + 2 * wall_thickness;
 height = 25;
-length = 92 + 2*wall_thickness;
+length = 92 + 2 * wall_thickness;
 
 width_outer_box = 2 * width - wall_thickness/2;
-width_inner_box = width-1.5*wall_thickness;
+width_inner_box = width - 1.5 * wall_thickness;
 width_space_box = 0.5 * width;
 
 font_size = 40;
@@ -78,7 +78,7 @@ translate([-width_outer_box/2, 0, -height/2]) {
         }
     }
 }
-// RIght side
+// Right side
 translate([width_outer_box/2, 0, -height/2]) {
     difference() {
         elrdcyl(2 * delta_side, delta_side, 0, height / 2);
