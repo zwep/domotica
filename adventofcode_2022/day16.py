@@ -63,7 +63,10 @@ class Game:
         self.index2name = dict(zip(range(n_valves), [x.name for x in list_of_valves]))
 
         self.print_current_pressure = 0
-        self.best_performance = dict(zip(range(total_time), [0] * total_time))
+        self.best_performance = dict(zip(range(0, total_time+1), [0] * (total_time+1)))
+
+    def get_neighbours_debug(self, valve_object, valve_state):
+        return [(1, x) for x in valve_object.connections + [valve_object.name]]
 
     def get_neighbours(self, valve_object, valve_state):
         index_valve = self.name2index[valve_object.name]
@@ -75,11 +78,12 @@ class Game:
         inactive_valve = np.array(valve_state) == 0
         useful_valve = np.array(self.flow_rate) > 0
         potential_neighbour_indices = []
-        # while len(potential_neighbour_indices) == 0 and len(possible_distances):
-        #      least_distance = possible_distances.pop()
-        #      closeby_valve = np.array(distance_row) == least_distance
-        #      potential_neighbour_indices = np.argwhere(inactive_valve & useful_valve & closeby_valve).ravel()
-        potential_neighbour_indices = np.argwhere(inactive_valve & useful_valve).ravel()
+        while len(potential_neighbour_indices) == 0:
+             least_distance = possible_distances.pop()
+             closeby_valve = np.array(distance_row) == least_distance
+             potential_neighbour_indices = np.argwhere(inactive_valve & useful_valve & closeby_valve).ravel()
+        # potential_neighbour_indices = np.argwhere(inactive_valve & useful_valve).ravel()
+        potential_neighbour_indices = np.argwhere(inactive_valve).ravel()
         n_neighbours = len(potential_neighbour_indices)
         potential_neighbour_distances = np.array(distance_row)[potential_neighbour_indices]
         potential_neighbour_flow_rate = np.array(self.flow_rate)[potential_neighbour_indices]
@@ -88,11 +92,11 @@ class Game:
         if valve_state[index_valve] == 0:
             # potential_neighbour_indices.append(index_valve)
             if any([(2 + potential_neighbour_distances[i]) * current_flow_rate > potential_neighbour_flow_rate[i] for i in range(n_neighbours)]):
-                # potential_neighbour_indices = [index_valve]
+                # Add it as an option to active itself only if the above holds..
                 potential_neighbour_indices.append(index_valve)
 
         # Now convert it to distance and their names....
-        return [(distance_row[i], self.index2name[i]) for i in potential_neighbour_indices]
+        return [(distance_row[i], self.index2name[i]) for i in potential_neighbour_indices][::-1]
 
     def check_possible_gain(self, valve_state):
         # Get current pressure gain
@@ -127,10 +131,6 @@ class Game:
         valve_object = self.valve_collection.get_valve(current_valve_name)
         move_string += current_valve_name + '->'
 
-        print(move_string)
-        if move_string == 'AA->DD->DD->CC->BB->':
-            print('pause')
-
         # Check the available options
         current_pressure = self.valve_collection.get_total_flow_rate(valve_state)
         self.print_current_pressure = current_pressure
@@ -138,8 +138,9 @@ class Game:
             valve_state[self.name2index[current_valve_name]] = 1
 
         neighbour_valves = self.get_neighbours(valve_object, valve_state)
-        print('\t' * depth, time_left, self.print_current_pressure, move_string)
-        print('\t' * depth, neighbour_valves)
+        # neighbour_valves = self.get_neighbours_debug(valve_object, valve_state)
+        # print('\t' * depth, time_left, self.print_current_pressure, move_string)
+        # print('\t' * depth, neighbour_valves)
 
         # Print the state before we start moving...
         # self.print(name=current_valve_name, state=valve_state, depth=depth, time=time_left, move_string=move_string)
@@ -147,29 +148,24 @@ class Game:
         # Or we can turn on a valve...
         # How to do this..
         amount_of_pressure = []
-        if len(neighbour_valves):
-            for delta_t, x in neighbour_valves:
-                # print('Neighbours ', x, '/', neighbour_valves)
-                # print('Pressure list ', amount_of_pressure)
-                if x == current_valve_name:
-                    index_current_valve = self.name2index[current_valve_name]
-                    if valve_state[index_current_valve] == 1:
-                        # We do append a value to amount_of_pressure before we continue with the forloop
-                        temp_value = 0
-                        continue
-                    else:
-                        # print('Turn on current valve: ', current_valve_name)
-                        # valve_state[self.name2index[current_valve_name]] = 1
-                        # In the next time step we are going to use the new valve value
-                        temp_value = current_pressure + self.make_a_move(x, valve_state=valve_state.copy(), time_left=time_left-1, depth=int(depth+delta_t),
-                                                                             move_string=move_string, update_state=True)
+        for delta_t, x in neighbour_valves:
+            if x == current_valve_name:
+                index_current_valve = self.name2index[current_valve_name]
+                if valve_state[index_current_valve] == 1:
+                    continue
                 else:
-                    # print('Move to valve: ', x)
-                    temp_value = current_pressure * max(1, min(time_left, delta_t)) + self.make_a_move(x, valve_state=valve_state.copy(), time_left=time_left-delta_t, depth=int(depth+delta_t),
-                                                                             move_string=move_string)
-                amount_of_pressure.append(temp_value)
-        else:
-            amount_of_pressure = [current_pressure * (time_left-1)]
+                    # In the next time step we are going to use set the new valve value
+                    temp_value = current_pressure + self.make_a_move(x, valve_state=valve_state.copy(), time_left=time_left-1, depth=int(depth+1),
+                                                                         move_string=move_string, update_state=True)
+            else:
+                current_pressure_correction = current_pressure * max(1, min(time_left, delta_t))
+                temp_value = current_pressure_correction + \
+                             self.make_a_move(x, valve_state=valve_state.copy(), time_left=int(time_left-delta_t),
+                                              depth=int(depth+delta_t), move_string=move_string)
+            amount_of_pressure.append(temp_value)
+
+        best_performance_value = max(self.best_performance[self.total_time-time_left], max(amount_of_pressure))
+        self.best_performance[time_left] = best_performance_value
 
         return max(amount_of_pressure)
 
@@ -238,11 +234,20 @@ dijkstra_obj = Dijkstra(valve_collection_obj)
 distance_matrix = dijkstra_obj.run_all_nodes()
 
 
-t0 = time.time()
-game_obj = Game(value_collection=valve_collection_obj, total_time=9, distance_matrix=distance_matrix)
-result = game_obj.make_a_move('AA')
-calc_time = time.time() - t0
-print(result, calc_time)
+result_dict = {}
+for i_time in [10]:
+    t0 = time.time()
+    game_obj = Game(value_collection=valve_collection_obj, total_time=i_time, distance_matrix=distance_matrix)
+    result = game_obj.make_a_move('AA')
+    calc_time = time.time() - t0
+    # print(result, calc_time)
+    result_dict[i_time] = (calc_time, result)
+
+game_obj.best_performance
+
+for k, v in result_dict.items():
+    print(k, v[1], v[0])
+
 # t=3 : 20
 # t=4 : 40
 # t=5 : 60
@@ -252,10 +257,8 @@ print(result, calc_time)
 # t=9 : 20*3+33*4 = 192
 # t=10 : 20*3+33*4+54 = 246
 
-#
-#
 # time_spend = []
-# for i in range(1, 25):
+# for i in range(1, 15):
 #     print('Time ', i)
 #     t0 = time.time()
 #     game_obj = Game(value_collection=valve_collection_obj, total_time=i, distance_matrix=distance_matrix)
@@ -268,3 +271,6 @@ print(result, calc_time)
 # plt.plot(time_spend)
 # plt.xlabel('Number of time steps')
 # plt.ylabel('Number of seconds to complete')
+#
+# game_obj.best_performance
+#
