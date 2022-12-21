@@ -243,7 +243,12 @@ for i_time in [10]:
     # print(result, calc_time)
     result_dict[i_time] = (calc_time, result)
 
-game_obj.best_performance
+"""
+Het huidige vraagstuk...
+
+Waarom gaat het niet goed als ik mijn eigen 'buren' functie gebruik IPV de 'buren' functie die je logischerwijs aanzet.
+In principe zitten in die van mij namelijk ook alle 'normale' buren denk ik zo.. Dus hoe kan dit?
+"""
 
 for k, v in result_dict.items():
     print(k, v[1], v[0])
