@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 def coord_to_set(y):
     return set([tuple(x) for x in y])
 
+
 def coord_to_list(y):
     return list([list(x) for x in y])
 
@@ -28,30 +29,31 @@ def coord_str_to_array(x):
 
 
 def add_and_filter(ground_truth, displacement, axis):
-    # Here we add a displatcement to the points that we have
+    # Here we add a displacement to the points that we have
     # We keep those points that are not in the original set anymore
     # In that way we obtain a boundary
     delta = np.zeros(3, dtype=int)
     delta[axis] = displacement
     deviated = ground_truth + delta
     # Very cumbersome way to check if something is in there...
+    # If the deviated coords are IN the ground truth, we DONT want them
     deviated = [x for x in deviated if not any((x == ground_truth).sum(axis=1) == 3)]
     return np.array(deviated)
 
 
 def check_extreme_point(point_to_evaluate, ground_truth):
-    # We also need to remove any 'outliers' from  the coordinates..
-    # ground_truth
-    # We could've used the neighbour dict that we first somewhere created...
+    # We also need to remove any 'outliers' from  the coordinates that we displaced with the previous function..
+    #
+    # We could've used the neighbour dict that we first somewhere created...?
     # But that also contains the z-coordinates...
     # Isnt that also necessary to consider?
-    # ground_truth[0]
+    # Yes... yes it was.
     #
     # Here we check whether we have a point on the outside
     # This is done by checking if it the largest or lowest x-value in a specific row
     # Similarly for the largest/smallest y-value in a specific column
     filtered_points = []
-    # rot_x matrix?
+    # We also need to rotate stuff in 45 degree to get specific other points..
     theta_x = np.deg2rad(45)
     rot_x_pos = np.array([[np.cos(theta_x), -np.sin(theta_x), 0],
                       [np.sin(theta_x), np.cos(theta_x), 0],
@@ -131,45 +133,63 @@ ax3d = fig.add_subplot(1, 1, 1, projection='3d')
 ax3d.scatter(*array_of_coords.T)
 ax3d.set_xlim(0, 10)
 
-_, _, min_z = np.min(array_of_coords, axis=0)
-_, _, max_z = np.max(array_of_coords, axis=0)
 
-inside_points = []
-for i_z in range(min_z, max_z+1):
-    bool_z_loc = array_of_coords[:, 2] == i_z
-    sel_array = array_of_coords[bool_z_loc]
-    # Lets remove all the lonesome points..
-    # sel_array = np.array(find_lonely_points(sel_array))
-    if len(sel_array):
-        for i_delta in [-1, 1]:
-            for i_ax in [0, 1]:
-                temp = add_and_filter(sel_array, i_delta, i_ax)
-                if i_z == 11:
-                    print('hoi')
-                temp = check_extreme_point(temp, ground_truth=sel_array)
-                if len(temp):
-                    inside_points.extend([list(x) for x in temp])
+def get_inside_points(array_of_coords):
+    _, _, min_z = np.min(array_of_coords, axis=0)
+    _, _, max_z = np.max(array_of_coords, axis=0)
 
-inside_points_str = [coord_to_str(x) for x in inside_points]
-inside_points_str = list(set(inside_points_str))
-inside_points_array = np.array([coord_str_to_array(x) for x in inside_points_str])
+    inside_points = []
+    for i_z in range(min_z, max_z+1):
+        bool_z_loc = array_of_coords[:, 2] == i_z
+        sel_array = array_of_coords[bool_z_loc]
+        # Lets remove all the lonesome points..
+        # sel_array = np.array(find_lonely_points(sel_array))
+        if len(sel_array):
+            for i_delta in [-1, 1]:
+                for i_ax in [0, 1]:
+                    temp = add_and_filter(sel_array, i_delta, i_ax)
+                    temp = check_extreme_point(temp, ground_truth=sel_array)
+                    if len(temp):
+                        inside_points.extend([list(x) for x in temp])
+
+    inside_points_str = [coord_to_str(x) for x in inside_points]
+    inside_points_str = list(set(inside_points_str))
+    inside_points_array = np.array([coord_str_to_array(x) for x in inside_points_str])
+    return inside_points_str, inside_points_array
+
+inside_points_str1, inside_points_array1 = get_inside_points(array_of_coords)
+# Lets move the z to the x position
+_, inside_points_array2 = get_inside_points(np.roll(array_of_coords, 1, axis=1))
+inside_points_array2 = np.roll(inside_points_array2, -1, axis=1)
+inside_points_str2 = [coord_to_str(x) for x in inside_points_array2]
+# Now letz move z to the y position?
+_, inside_points_array3 = get_inside_points(np.roll(array_of_coords, 2, axis=1))
+inside_points_array3 = np.roll(inside_points_array3, -2, axis=1)
+inside_points_str3 = [coord_to_str(x) for x in inside_points_array3]
+
+len(inside_points_str1)
+len(inside_points_str2)
+len(set(inside_points_str1).intersection(set(inside_points_str2)).intersection(set(inside_points_str3)))
+is_this_the_true_set = set(inside_points_str1).intersection(set(inside_points_str2)).intersection(set(inside_points_str3))
+inside_points_str = list(is_this_the_true_set)
+is_this_the_true_array = np.array([coord_str_to_array(x) for x in is_this_the_true_set])
 
 #
 # i_z = 19 heeft een fout
 # i_z 16 ook
 # Mijn idee werkt niet...
 #
-
-# Plot everything...
-for i_z in range(min_z, max_z+1):
-    fig, ax = plt.subplots()
-    inside_i_z = inside_points_array[inside_points_array[:, 2] == i_z]
-    points_i_z = array_of_coords[array_of_coords[:, 2] == i_z]
-    inside_i_z[:, 2] = 20  # Set the size
-    points_i_z[:, 2] = 15  # Set the size
-    ax.scatter(*inside_i_z.T, zorder=999, facecolors='none', edgecolors='r')
-    ax.scatter(*points_i_z.T, 'k')
-    fig.suptitle(str(i_z))
+#
+# # Plot everything...
+# for i_z in range(min_z, max_z+1):
+#     fig, ax = plt.subplots()
+#     inside_i_z = inside_points_array[inside_points_array[:, 2] == i_z]
+#     points_i_z = array_of_coords[array_of_coords[:, 2] == i_z]
+#     inside_i_z[:, 2] = 20  # Set the size
+#     points_i_z[:, 2] = 15  # Set the size
+#     ax.scatter(*inside_i_z.T, zorder=999, facecolors='none', edgecolors='r')
+#     ax.scatter(*points_i_z.T, 'k')
+#     fig.suptitle(str(i_z))
 
 
 # Some points are marked as inside but are not. Example:
@@ -202,10 +222,14 @@ for i_coord_str in inside_points_str:
 
 sum([v for k, v in cube_dict.items() if k in list_of_coords])
 # New answer...
+# 4192 comes from the first part
 4192 - sum([6 - v for k, v in cube_dict.items() if k in inside_points_str])
+
 
 # 2508 too low
 # 2533 wrong..
+# 2537 wrong.. as well.. this was a quick guess
 # 2625 too high
+# 2738 (new since jan 2023)
 # 3328 too high
 
