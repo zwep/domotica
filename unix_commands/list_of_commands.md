@@ -198,3 +198,45 @@ To remove/kill all sessions
 ```bash
 tmux list-sessions | grep -v attached | awk 'BEGIN{FS=":"}{print $1}' | xargs -n 1 tmux kill-session -t || echo No sessions to kill
 ```
+
+# servicectl
+
+We can also setup a service that can run in the background. See this url for a general explanation
+
+https://www.freedesktop.org/software/systemd/man/systemd.service.html
+
+```bash
+# Create a new service file
+sudo touch /etc/systemd/system/your_script.service
+
+# Edit the service file
+sudo nano /etc/systemd/system/your_script.service
+```
+
+Use this content below..
+
+```bash
+[Unit]
+Description=My Script
+
+[Service]
+ExecStart=/path/to/your/script.sh
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
+```
+
+And execute these commands
+
+```bash
+# 
+sudo systemctl daemon-reload
+sudo systemctl start foo.service
+sudo systemctl enable foo.service
+systemctl status foo.service
+```
+
+Or we can check stuff like this
+https://wiki.archlinux.org/title/Systemd/User
