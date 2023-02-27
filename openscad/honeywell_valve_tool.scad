@@ -6,7 +6,7 @@ rad = 57.29578;
 MAX_DEGREE = 360;
 
 N_TOOTH = 12; // Yeah its just 12 tooths..
-WIDTH_TOOL = 5; // Using 5 millimeter for width of the 'mouth'
+WIDTH_TOOL = 4; // Using 5 millimeter for width of the 'mouth'
 HEIGHT_TOOL = 7; // Measured about 8 or so.. again, want an easy fit
 INNER_RADIUS = 26.4; // The measured inner radius is about 26.4 mm, using less for an easy fit
 OUTER_RADIUS = 28.5;  // The measured part is about 29mm, using less to be sure it fits easily
@@ -57,7 +57,7 @@ module tool_arm(){
     translate([0, LENGTH_ARM / 2 - OUTER_RADIUS , 0]){
         cube([2 * OUTER_RADIUS, LENGTH_ARM, HEIGHT_ARM], center=true);
     };
-        cylinder(h = 2 * HEIGHT_ARM, center=true, r=RADIUS_HOLE / 2);
+        cylinder(h = 2 * HEIGHT_ARM, center=true, r=RADIUS_HOLE);
 }
 }
 
@@ -68,7 +68,7 @@ outer_radius = OUTER_RADIUS, width_tool = WIDTH_TOOL, height_tool = HEIGHT_TOOL 
 
 // Create tool with arm
 //union() {
-  //  tool_arm();
-   // honeywell_gear_hollow(max_degree = MAX_DEGREE, n_tooth = N_TOOTH, inner_radius = INNER_RADIUS,
-    //outer_radius = OUTER_RADIUS, width_tool = WIDTH_TOOL, height_tool = HEIGHT_TOOL + HEIGHT_ARM);
+//    tool_arm();
+//    honeywell_gear_hollow(max_degree = MAX_DEGREE, n_tooth = N_TOOTH, inner_radius = INNER_RADIUS,
+//    outer_radius = OUTER_RADIUS, width_tool = WIDTH_TOOL, height_tool = HEIGHT_TOOL + HEIGHT_ARM);
 //}
