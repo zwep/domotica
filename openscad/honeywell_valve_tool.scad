@@ -62,13 +62,13 @@ module tool_arm(){
 }
 
 // Creat tool without arm
-honeywell_gear_hollow(max_degree = MAX_DEGREE, n_tooth = N_TOOTH, inner_radius = INNER_RADIUS,
-outer_radius = OUTER_RADIUS, width_tool = WIDTH_TOOL, height_tool = HEIGHT_TOOL + HEIGHT_ARM);
+//honeywell_gear_hollow(max_degree = MAX_DEGREE, n_tooth = N_TOOTH, inner_radius = INNER_RADIUS,
+//outer_radius = OUTER_RADIUS, width_tool = WIDTH_TOOL, height_tool = HEIGHT_TOOL + HEIGHT_ARM);
 
 
 // Create tool with arm
-//union() {
-//    tool_arm();
-//    honeywell_gear_hollow(max_degree = MAX_DEGREE, n_tooth = N_TOOTH, inner_radius = INNER_RADIUS,
-//    outer_radius = OUTER_RADIUS, width_tool = WIDTH_TOOL, height_tool = HEIGHT_TOOL + HEIGHT_ARM);
-//}
+union() {
+    tool_arm();
+    honeywell_gear_hollow(max_degree = MAX_DEGREE, n_tooth = N_TOOTH, inner_radius = INNER_RADIUS,
+    outer_radius = OUTER_RADIUS, width_tool = WIDTH_TOOL, height_tool = HEIGHT_TOOL + HEIGHT_ARM);
+}

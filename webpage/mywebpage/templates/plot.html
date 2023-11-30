@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Plot</title>
+    <!--
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  -->
+</head>
+<body>
+  <div id="plot"></div>
+  <script>
+    // Function to load the plot using Plotly
+    function loadPlot() {
+      Plotly.d3.csv('/home/bugger/Documents/data/arduino/remote_sensor.csv', function (data) {
+        var x = [];
+        var y = [];
+        var z = [];
+
+        data.forEach(function (row) {
+          x.push(row['time']);
+          y.push(row['temperature']);
+          z.push(row['humidity']);
+        });
+
+        var trace = {
+          x: x,
+          y: y,
+          type: 'scatter'
+        };
+
+        var layout = {
+          title: 'Live Feed Plot',
+          xaxis: {
+            title: 'X'
+          },
+          yaxis: {
+            title: 'Y'
+          }
+        };
+
+        var plotData = [trace];
+
+        Plotly.newPlot('plot', plotData, layout);
+      });
+    }
+
+    // Load the plot when the page is ready
+    document.addEventListener('DOMContentLoaded', loadPlot);
+  </script>
+</body>
+</html>
