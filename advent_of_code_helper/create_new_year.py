@@ -17,7 +17,7 @@ Create all the days with a default structure
 default_day_path = os.path.expanduser('~/PycharmProjects/domotica/advent_of_code_helper/default_day.py')
 
 num_days = 25
-for ii in range(num_days + 1):
+for ii in range(1, num_days + 1):
     file_path = os.path.join(DCODE_YEAR, f'day_{ii}.py')
     # Now copy the default...
     if os.path.isfile(file_path):
