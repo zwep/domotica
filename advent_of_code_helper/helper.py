@@ -8,6 +8,13 @@ def read_lines(file_path):
     return content
 
 
+def read_lines_strip(file_path):
+    with open(file_path, 'r') as f:
+        content = f.readlines()
+
+    return [x.strip('\n') for x in content]
+
+
 def fetch_data(day):
     ddata_day = os.path.join(DDATA_YEAR, day + '.txt')
     if os.path.isfile(ddata_day):
