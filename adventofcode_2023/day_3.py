@@ -2,7 +2,7 @@ import numpy as np
 import re
 import os
 import matplotlib.pyplot as plt
-from advent_of_code_helper.helper import read_lines_strip, fetch_data
+from advent_of_code_helper.helper import read_lines_strip, fetch_data, fetch_test_data
 from advent_of_code_helper.configuration import DDATA_YEAR
 
 
@@ -68,6 +68,15 @@ DDATA_DAY = os.path.join(DDATA_YEAR, DAY + '.txt')
 
 # Run get data..
 _ = fetch_data(DAY)
+
+DDATA_DAY_TEST = os.path.join(DDATA_YEAR, DAY + '_test.txt')
+
+# Run get data..
+_ = fetch_data(DAY)
+_ = fetch_test_data(DAY)
+
+test_puzzle_input = read_lines_strip(DDATA_DAY_TEST)
+
 
 input_data = ["467..114..",
 "...*......",
@@ -137,3 +146,6 @@ for i_gear, j_gear in gear_collection:
 
 # 76019682
 sum(valid_gear_list)
+
+# Amazing solution
+# https://topaz.github.io/paste/#XQAAAQAcAgAAAAAAAAA0m0pnuFI8c+fPp4G3Y5M2miSs3R6AnrKm3fbDkugpdVsCgQOTZL/yzxGwy/N08UeBslxE7G36XluuSq4Y/2FE0+4nPcdj9lpkrrjBk5HRCFLEKuPjUV8tYPx04VDoJ1c6yyLzScmAGwNvzpPoqb5PkRyyy4dSEcuEDe/k0/U7h7pZVh4eTrNAIPsTNZohcltxuwuA4lrZSN37i0QZiufFpvLVyhV/dLBnmSr+2jwFcFE+W6OEIFQxK6MIJ2z7TWKj8lg6yV4yhJzTm+c+QHh2omzhGVLd2WdcHdhjmCyC+Btbr3yCqemYb/6tMUvz8VchnyHstx7QKKeLVmTOEyYqHH/qRDhlKXSQ23RWuPibCf4quQUPGpPDRsH4KITzLbIUVUdssnSp6ffcHO+dAISdzBOiznl5/+PI+jE=

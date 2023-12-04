@@ -2,7 +2,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import re
-from advent_of_code_helper.helper import read_lines, fetch_data, read_lines_strip
+from advent_of_code_helper.helper import read_lines, fetch_data, read_lines_strip, fetch_test_data
 from advent_of_code_helper.configuration import DDATA_YEAR
 
 
@@ -24,9 +24,13 @@ def get_str(search_obj_list, convert_dict):
 
 DAY = "1"
 DDATA_DAY = os.path.join(DDATA_YEAR, DAY + '.txt')
+DDATA_DAY_TEST = os.path.join(DDATA_YEAR, DAY + '_test.txt')
 
 # Run get data..
 _ = fetch_data(DAY)
+_ = fetch_test_data(DAY)
+
+test_puzzle_input = read_lines_strip(DDATA_DAY_TEST)
 
 # First
 if False:

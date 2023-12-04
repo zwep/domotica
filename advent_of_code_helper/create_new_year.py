@@ -1,7 +1,19 @@
-from advent_of_code_helper.configuration import DDATA_YEAR, DCODE_YEAR
+from advent_of_code_helper.configuration import DDATA_YEAR, DCODE_YEAR, DDEFAULT_DAY
 import re
 import os
 import shutil
+
+
+def write_new_default_day(day):
+    with open(DDEFAULT_DAY, 'r') as f:
+        default_day_txt = f.read()
+
+    default_day_txt = re.sub(":day_value:", str(day), default_day_txt)
+
+    with open(file_path, 'w') as f:
+        f.write(default_day_txt)
+
+    print(f'\t Written day {ii}')
 
 """
 Create the necessary directories
@@ -14,20 +26,19 @@ os.makedirs(DCODE_YEAR, exist_ok=True)
 Create all the days with a default structure
 """
 
-default_day_path = os.path.expanduser('~/PycharmProjects/domotica/advent_of_code_helper/default_day.py')
 
 num_days = 25
-for ii in range(1, num_days + 1):
+for ii in range(5, num_days + 1):
     file_path = os.path.join(DCODE_YEAR, f'day_{ii}.py')
     # Now copy the default...
     if os.path.isfile(file_path):
-        print("File already exists")
-        continue
+        print(f"Day {ii} already exists")
+        # Default is no
+        result = input('Overwrite file? y / [n]') or "n"
+        if result == 'y':
+            write_new_default_day(ii)
+        else:
+            print(f'\t Skipped day {ii}')
+        print()
     else:
-        with open(default_day_path, 'r') as f:
-            default_day = f.read()
-
-        default_day = re.sub(":day_value:", str(ii), default_day)
-
-        with open(file_path, 'w') as f:
-            f.write(default_day)
+       write_new_default_day(ii)

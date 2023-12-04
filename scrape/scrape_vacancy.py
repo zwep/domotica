@@ -84,3 +84,12 @@ dest_file = os.path.join(dd, f'waargajewerken.txt')
 with open(dest_file, 'w') as f:
     f.write('\n'.join(unique_werken))
 # Process one vacancy text...
+
+
+# Test
+import numpy as np
+import string
+sample_list = list(string.ascii_lowercase) + [' '] + [' '] + [' '] + [' '] + [' '] + [' ']
+''.join(list(np.random.choice(sample_list, 100, replace=True)))
+
+
