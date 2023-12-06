@@ -19,6 +19,12 @@ def read_lines_strip(file_path):
 
 
 def fetch_data(day):
+    """
+    Function to get YOUR puzzle input from the html page
+
+    :param day: which day is it...
+    :return:
+    """
     ddata_day = os.path.join(DDATA_YEAR, day + '.txt')
     if os.path.isfile(ddata_day):
         return -1
@@ -29,6 +35,12 @@ def fetch_data(day):
 
 
 def fetch_test_data(day):
+    """
+    Function to get the test puzzle input from the html page
+
+    :param day: which day is it...
+    :return:
+    """
     ddata_day = os.path.join(DDATA_YEAR, day + '_test.txt')
     if os.path.isfile(ddata_day):
         return -1
@@ -55,3 +67,6 @@ def fetch_test_data(day):
         # Store input
         with open(ddata_day, 'w') as f:
             f.write(test_puzzle_input)
+
+def int_str2list(int_str):
+    return list(map(int, int_str.split()))
