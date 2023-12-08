@@ -14,7 +14,7 @@ def day2(x_input):
     return None
 
 
-DAY = ":day_value:"
+DAY = "23"
 DDATA_DAY = os.path.join(DDATA_YEAR, DAY + '.txt')
 DDATA_DAY_TEST = os.path.join(DDATA_YEAR, DAY + '_test.txt')
 

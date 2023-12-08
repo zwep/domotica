@@ -4,7 +4,7 @@ import os
 Here we are going to define the paths.. there wont be much
 """
 
-YEAR = "2023"
+YEAR = "2022"
 DDATA = os.path.expanduser('~/Documents/data/aoc')
 DCODE = os.path.expanduser('~/PycharmProjects/domotica')
 
