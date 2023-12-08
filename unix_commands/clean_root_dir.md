@@ -26,7 +26,7 @@ find ~/.cache/ -type f -atime +90 -delete
 
 I also delete the older logs if no issues.
 
-find /var/log/ -type f -atime +10  -name *.gz* -print -exec rm {} \;
+find ~/.cache/ -type f -atime +90 -delete
 
 houseclean journalctl over 10 days
 

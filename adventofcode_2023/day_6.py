@@ -48,6 +48,7 @@ for i_race in range(n_races):
 
 np.prod(possibilities)
 
+# Part 2
 T = int(''.join(selected_input[0].split(':')[1].split(' ')))
 D = int(''.join(selected_input[1].split(':')[1].split(' ')))
 
