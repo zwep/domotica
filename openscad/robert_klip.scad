@@ -1,8 +1,8 @@
 golden_ratio = 1.618;
 FN = 100;
 
-arm_thickness = 5; // Thickness of the arm-plate, this should fit a 3mm screw
-plate_thickness = 3; //
+arm_thickness = 3; // Thickness of the arm-plate, this should fit a 3mm screw
+plate_thickness = 5; //
 arm_distance = 56; // The distance between the arm-plates
 delta_x = arm_thickness; // The position for the hole from the edge
 
@@ -62,6 +62,15 @@ module ArmPlate(){
 }
 
 
-HeadPlate();
-//ArmPlate();
 
+new_plate_width = arm_distance +  2 * arm_thickness;
+
+difference(){
+    cube([new_plate_width, arm_width, arm_length]);
+    translate([arm_thickness, 0, plate_thickness]){
+        cube([arm_distance, arm_width, arm_length]);
+    };
+}
+
+// HeadPlate();
+//ArmPlate();

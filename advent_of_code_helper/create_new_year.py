@@ -13,7 +13,7 @@ def write_new_default_day(day):
     with open(file_path, 'w') as f:
         f.write(default_day_txt)
 
-    print(f'\t Written day {ii} to {DDEFAULT_DAY}')
+    print(f'\t Written day {ii} to {file_path}')
 
 """
 Create the necessary directories
@@ -26,7 +26,7 @@ os.makedirs(DCODE_YEAR, exist_ok=True)
 Create all the days with a default structure
 """
 # Set this variabel to determine from which day on we will generate the default py files
-STARTING_DAY = 19
+STARTING_DAY = 9
 num_days = 25
 for ii in range(STARTING_DAY, num_days + 1):
     file_path = os.path.join(DCODE_YEAR, f'day_{ii}.py')
