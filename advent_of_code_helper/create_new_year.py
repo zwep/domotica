@@ -26,7 +26,7 @@ os.makedirs(DCODE_YEAR, exist_ok=True)
 Create all the days with a default structure
 """
 # Set this variabel to determine from which day on we will generate the default py files
-STARTING_DAY = 9
+STARTING_DAY = 11
 num_days = 25
 for ii in range(STARTING_DAY, num_days + 1):
     file_path = os.path.join(DCODE_YEAR, f'day_{ii}.py')

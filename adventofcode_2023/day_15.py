@@ -2,7 +2,7 @@ import numpy as np
 import os
 import re
 import matplotlib.pyplot as plt
-from advent_of_code_helper.helper import read_lines_strip, fetch_data, fetch_test_data
+import advent_of_code_helper.helper as helper
 from advent_of_code_helper.configuration import DDATA_YEAR
 
 
@@ -19,9 +19,9 @@ DDATA_DAY = os.path.join(DDATA_YEAR, DAY + '.txt')
 DDATA_DAY_TEST = os.path.join(DDATA_YEAR, DAY + '_test.txt')
 
 # Run get data..
-_ = fetch_data(DAY)
-_ = fetch_test_data(DAY)
+_ = helper.fetch_data(DAY)
+_ = helper.fetch_test_data(DAY)
 
 # read input
-puzzle_input = read_lines_strip(DDATA_DAY)
-test_puzzle_input = read_lines_strip(DDATA_DAY_TEST)
+puzzle_input = helper.read_lines_strip(DDATA_DAY)
+test_puzzle_input = helper.read_lines_strip(DDATA_DAY_TEST)
