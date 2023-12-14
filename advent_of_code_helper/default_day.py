@@ -6,14 +6,6 @@ import advent_of_code_helper.helper as helper
 from advent_of_code_helper.configuration import DDATA_YEAR
 
 
-def day1(x_input):
-    return None
-
-
-def day2(x_input):
-    return None
-
-
 DAY = ":day_value:"
 DDATA_DAY = os.path.join(DDATA_YEAR, DAY + '.txt')
 DDATA_DAY_TEST = os.path.join(DDATA_YEAR, DAY + '_test.txt')

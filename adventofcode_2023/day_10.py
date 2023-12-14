@@ -3,6 +3,7 @@ import os
 import re
 import matplotlib.pyplot as plt
 from advent_of_code_helper.helper import read_lines_strip, fetch_data, fetch_test_data
+import advent_of_code_helper.helper as helper
 from advent_of_code_helper.configuration import DDATA_YEAR
 
 
@@ -156,18 +157,6 @@ print('Right ', len(all_right_neighbours))
 Debug test case
 """
 
-class color:
-   PURPLE = '\033[95m'
-   CYAN = '\033[96m'
-   DARKCYAN = '\033[36m'
-   BLUE = '\033[94m'
-   GREEN = '\033[92m'
-   YELLOW = '\033[93m'
-   RED = '\033[91m'
-   BOLD = '\033[1m'
-   UNDERLINE = '\033[4m'
-   END = '\033[0m'
-
 
 if MAX_lines < 100:
     for ii in range(MAX_lines):
@@ -177,23 +166,23 @@ if MAX_lines < 100:
         for jj in range(MAX_char):
             cur_char = selected_puzzle[ii][jj]
             if (ii, jj) in local_left_coordinates: #all_left_neighbours:
-                temp_left_str += color.RED + cur_char + color.END
+                temp_left_str += helper.Color.RED + cur_char + helper.Color.END
             else:
                 temp_left_str += cur_char
 
             if (ii, jj) in local_right_coordinates: #all_right_neighbours:
-                temp_right_str += color.BLUE + cur_char + color.END
+                temp_right_str += helper.Color.BLUE + cur_char + helper.Color.END
             else:
                 if (ii, jj) in missing_coords:  # all_right_neighbours:
-                    temp_right_str += color.PURPLE + cur_char + color.END
+                    temp_right_str += helper.Color.PURPLE + cur_char + helper.Color.END
                 else:
                     temp_right_str += cur_char
 
             if (ii, jj) in coordinates_visited:
-                temp_path_str += color.GREEN + cur_char + color.END
+                temp_path_str += helper.Color.GREEN + cur_char + helper.Color.END
             else:
                 if (ii, jj) in missing_coords:  # all_right_neighbours:
-                    temp_path_str += color.PURPLE + cur_char + color.END
+                    temp_path_str += helper.Color.PURPLE + cur_char + helper.Color.END
                 else:
                     temp_path_str += cur_char
 

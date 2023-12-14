@@ -5,6 +5,19 @@ import re
 from advent_of_code_helper.configuration import YEAR, DDATA_YEAR
 
 
+class Color:
+   PURPLE = '\033[95m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
+
+
 def read_lines(file_path):
     with open(file_path, 'r') as f:
         content = f.readlines()
@@ -68,5 +81,32 @@ def fetch_test_data(day):
         with open(ddata_day, 'w') as f:
             f.write(test_puzzle_input)
 
-def int_str2list(int_str):
-    return list(map(int, int_str.split()))
+
+def int_str2list(int_str, sep=None):
+    # Convert "1 3 4" to [1,3,4]
+    # Convert "1,3,4" to [1,3,4] when sep = ','
+    return list(map(int, int_str.split(sep)))
+
+
+def get_column(input_list, col_index, to_str=False):
+    if to_str:
+        return ''.join([i_line[col_index] for i_line in input_list])
+    else:
+        return [i_line[col_index] for i_line in input_list]
+
+
+def transpose_of_nested_list(input_list, to_str=False):
+    # Puzzle input is often ['234', '252', ..., '235']
+    transposed_list = []
+    n_col = len(input_list[0])
+    for ii in range(n_col):
+        temp = get_column(input_list, ii)
+        if to_str:
+            transposed_list.append(''.join(temp))
+        else:
+            transposed_list.append(temp)
+    return transposed_list
+
+
+def difference_element_list(input_list):
+    return [j-i for i, j in zip(input_list[:-1], input_list[1:])]
