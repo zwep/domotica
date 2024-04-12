@@ -5,6 +5,12 @@ import re
 from advent_of_code_helper.configuration import YEAR, DDATA_YEAR
 
 
+DIR2POS = {'N': [-1, 0], 'E': [0, 1], 'S': [1, 0], 'W': [0, -1]}
+STEP2POS = {'U': [-1, 0], 'R': [0, 1], 'D': [1, 0], 'L': [0, -1]}
+DIR2STEP = {'N': 'U', 'E': 'R', 'S': 'D', 'W': 'L'}
+STEP2DIR = {v: k for k, v in DIR2STEP.items()}
+
+
 class Color:
    PURPLE = '\033[95m'
    CYAN = '\033[96m'
@@ -110,3 +116,53 @@ def transpose_of_nested_list(input_list, to_str=False):
 
 def difference_element_list(input_list):
     return [j-i for i, j in zip(input_list[:-1], input_list[1:])]
+
+
+def update_position(cur_pos, delta_pos):
+    return [cur_pos[0] + delta_pos[0], cur_pos[1] + delta_pos[1]]
+
+
+def get_neighbours(ii, jj, coordinates_visited, max_ii, max_jj, neighbours_found=None):
+    """
+    Gets all the neighvours of ii, jj bounded by the coordinates_visited content
+
+    Originates from day 10
+
+    --> it is a shit algorithm. This can be done better
+    :param ii:
+    :param jj:
+    :param coordinates_visited:
+    :return:
+    """
+    stack_to_visit = [(ii, jj)]
+    # Make it so that we can initialze with a set of neighbours
+    if neighbours_found is None:
+        neighbours_found = []
+    while len(stack_to_visit):
+        ii, jj = stack_to_visit.pop()
+        # if (ii, jj) in coordinates_visited:
+        #     continue
+        # elif (ii, jj) in neighbours_found:
+        #     continue
+        # elif (ii < 0) or (ii > max_ii):
+        #     continue
+        # elif (jj < 0) or (jj > max_jj):
+        #     continue
+        # else:
+        # neighbours_found.append((ii, jj))
+        for k, v in DIR2POS.items():
+            delta_ii, delta_jj = v
+            # Update position
+            new_ii, new_jj = (ii + delta_ii, jj + delta_jj)
+            if (new_ii, new_jj) in coordinates_visited:
+                continue
+            elif (new_ii, new_jj) in neighbours_found:
+                continue
+            elif (new_ii < 0) or (new_ii > max_ii):
+                continue
+            elif (new_jj < 0) or (new_jj > max_jj):
+                continue
+
+            stack_to_visit.append((ii + delta_ii, jj + delta_jj))
+            neighbours_found.append((ii, jj))
+    return neighbours_found

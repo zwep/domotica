@@ -1,16 +1,16 @@
 golden_ratio = 1.618;
 FN = 100;
 
-arm_thickness = 3; // Thickness of the arm-plate, this should fit a 3mm screw
+arm_thickness = 5; // Thickness of the arm-plate, this should fit a 3mm screw
 plate_thickness = 5; //
 arm_distance = 56; // The distance between the arm-plates
-delta_x = arm_thickness; // The position for the hole from the edge
+delta_x = 6; // The position for the hole from the edge
 
 // Make hole for the screw + nut
-cylinder_diameter = 3; // hole diameter for the screw
-cylinder_length = 15; // length of the screw..?
-box_width = 5.5; // width of a 3mm hex nut
-box_height = 2.5; // ... height of a 3mm hex nut
+cylinder_diameter = 3.3; // hole diameter for the screw
+cylinder_length = 20; // length of the screw..?
+box_width = 5.7; // width of a 3mm hex nut
+box_height = 2.6; // ... height of a 3mm hex nut
 
 // DERIVED QUANTITIES
 plate_width = arm_distance +  2 * (delta_x + 0.5 * arm_thickness); // Head plate width
@@ -35,10 +35,10 @@ module HeadPlate() {
     difference() {
         cube([plate_width, plate_height, plate_thickness]);
         union() {
-            translate(hole_location_1) {cylinder(h = arm_thickness + 1, r = cylinder_diameter / 2, $fn=FN);}
-            translate(hole_location_2) {cylinder(h = arm_thickness + 1, r = cylinder_diameter / 2, $fn=FN);}
-            translate(hole_location_3) {cylinder(h = arm_thickness + 1, r = cylinder_diameter / 2, $fn=FN);}
-            translate(hole_location_4) {cylinder(h = arm_thickness + 1, r = cylinder_diameter / 2, $fn=FN);}
+            translate(hole_location_1) {cylinder(h = arm_thickness + 5, r = cylinder_diameter / 2, $fn=FN);}
+            translate(hole_location_2) {cylinder(h = arm_thickness + 5, r = cylinder_diameter / 2, $fn=FN);}
+            translate(hole_location_3) {cylinder(h = arm_thickness + 5, r = cylinder_diameter / 2, $fn=FN);}
+            translate(hole_location_4) {cylinder(h = arm_thickness + 5, r = cylinder_diameter / 2, $fn=FN);}
         };
     }
 }
@@ -63,14 +63,14 @@ module ArmPlate(){
 
 
 
-new_plate_width = arm_distance +  2 * arm_thickness;
+// new_plate_width = arm_distance +  2 * arm_thickness;
+//
+//difference(){
+//    cube([new_plate_width, arm_width, arm_length]);
+//    translate([arm_thickness, 0, plate_thickness]){
+//        cube([arm_distance, arm_width, arm_length]);
+//    };
+//}
 
-difference(){
-    cube([new_plate_width, arm_width, arm_length]);
-    translate([arm_thickness, 0, plate_thickness]){
-        cube([arm_distance, arm_width, arm_length]);
-    };
-}
-
-// HeadPlate();
-//ArmPlate();
+//HeadPlate();
+ArmPlate();

@@ -74,14 +74,16 @@ print(result)
 Part 2
 """
 
-selected_puzzle = puzzle_input
+selected_puzzle = test_puzzle_input
 # Is this it..?
 x = np.copy(selected_puzzle).tolist()
+result = get_load(x)
 n_cycle = 400
 load_weight = []
-for i in range(n_cycle):
+for i in range(3):
     x = perform_cycle(x)
     result = get_load(x)
+    print(i, result)
     load_weight.append(result)
 
 # we know that from 200 onwards the period repeats...
