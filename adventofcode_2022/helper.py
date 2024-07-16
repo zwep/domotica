@@ -1,1 +1,0 @@
-DPATH = '/home/bugger/Documents/data/aoc/2022'

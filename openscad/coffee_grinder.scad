@@ -25,13 +25,14 @@ hole_width_top = 3;
 hole_height_top = 10;
 hole_depth_top = 1;
 
-
 // The hole for the adapter
 diameter_hole = 13.5;
 // Slight modification
 _diameter_hole = diameter_hole - 0.5;
 // The width of the bar that is used to drive the grinder
 width_driver_grinder = 5;
+// Making it a bit wider
+_width_driver_grinder = width_driver_grinder + 0.5;
 width_driver_drill = 7.5;
 height_driver_grinder = 24;
 
@@ -68,7 +69,7 @@ module grinder_adapter() {
     // Now we want to make the adapter between the grinder and the drilling machine
     difference() {
         cylinder(h = 2 * height_driver_grinder, d = _diameter_hole, $fn = FN);
-        cube([width_driver_grinder, width_driver_grinder, 2 * height_driver_grinder], center = true);
+        cube([_width_driver_grinder, _width_driver_grinder, 2 * height_driver_grinder], center = true);
         translate([0, 0, height_driver_grinder]){
             cylinder(h = height_driver_grinder, d = width_driver_drill, $fn=6);
         }
@@ -79,4 +80,4 @@ module grinder_adapter() {
 
 
 //grinder_top();
-grinder_adapter();
+//grinder_adapter();

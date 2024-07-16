@@ -69,6 +69,7 @@ ydl_opts = {
         'preferredcodec': 'mp3',
     }],
 }
+
 #  'preferredquality': '192',
 
 
@@ -94,6 +95,8 @@ if __name__ == "__main__":
     # filenames = 'https://www.youtube.com/watch?v=zvsGNVb_7T0'
     # filenames = 'https://www.youtube.com/watch?v=jI4sPfOfOa8'
     # filenames = 'https://www.youtube.com/watch?v=fScQo9jA9VI'
-    filenames = 'https://www.youtube.com/watch?v=R0krUthYxF4'
+    # filenames = 'https://www.youtube.com/watch?v=R0krUthYxF4'
+    # filenames = 'https://www.youtube.com/watch?v=ycPr5-27vSI&list=PLmM1MkVIgsWV6Nn06Kew8MrZG-y8GS6Fx'
+    filenames =  'https://www.youtube.com/watch?v=UBsIGF-KZZw'
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([filenames])
