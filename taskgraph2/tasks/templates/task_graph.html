@@ -1,0 +1,75 @@
+{% load math_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Dependency Graph</title>
+    <style>
+        .node {
+            border: 1px solid #333;
+            padding: 6px 12px;
+            background: #f0f0f0;
+            display: inline-block;
+            position: absolute;
+            border-radius: 6px;
+            text-decoration: none;
+            color: black;
+            transition: background 0.2s;
+        }
+
+        .node:hover {
+            background: #cce5ff;
+            cursor: pointer;
+        }
+
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">Task Dependency Graph</h2>
+    <div id="graph" style="position: relative; height: 800px;">
+        {% for task in tasks %}
+            <a href="{% url 'task_action' task.id %}"
+               class="node"
+               id="task-{{ task.id }}"
+               title="Depends on: {% for dep in task.depends_on.all %}{{ dep.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
+               style="left: {{ forloop.counter0|add:1|mul:120 }}px; top: {{ forloop.counter0|add:1|mul:80 }}px;">
+                {{ task.name }}
+            </a>
+        {% endfor %}
+
+        <svg width="100%" height="100%">
+            {% for task in tasks %}
+                {% for dep in task.depends_on.all %}
+                    <line x1="0" y1="0" x2="0" y2="0" stroke="black" stroke-width="2"
+                          data-from="task-{{ task.id }}" data-to="task-{{ dep.id }}" />
+                {% endfor %}
+            {% endfor %}
+        </svg>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const lines = document.querySelectorAll('line');
+            lines.forEach(line => {
+                const from = document.getElementById(line.dataset.from);
+                const to = document.getElementById(line.dataset.to);
+                if (from && to) {
+                    const fromRect = from.getBoundingClientRect();
+                    const toRect = to.getBoundingClientRect();
+                    const parentRect = document.getElementById("graph").getBoundingClientRect();
+
+                    line.setAttribute('x1', fromRect.left + fromRect.width / 2 - parentRect.left);
+                    line.setAttribute('y1', fromRect.top + fromRect.height / 2 - parentRect.top);
+                    line.setAttribute('x2', toRect.left + toRect.width / 2 - parentRect.left);
+                    line.setAttribute('y2', toRect.top + toRect.height / 2 - parentRect.top);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

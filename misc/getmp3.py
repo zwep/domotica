@@ -97,6 +97,7 @@ if __name__ == "__main__":
     # filenames = 'https://www.youtube.com/watch?v=fScQo9jA9VI'
     # filenames = 'https://www.youtube.com/watch?v=R0krUthYxF4'
     # filenames = 'https://www.youtube.com/watch?v=ycPr5-27vSI&list=PLmM1MkVIgsWV6Nn06Kew8MrZG-y8GS6Fx'
-    filenames =  'https://www.youtube.com/watch?v=UBsIGF-KZZw'
+    # filenames =  'https://www.youtube.com/watch?v=UBsIGF-KZZw'
+    filenames = "https://www.youtube.com/playlist?list=PLHRd0ZlWSwj-MKfpDbJNV78CP5KgOHRXL"
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([filenames])

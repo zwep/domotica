@@ -99,7 +99,7 @@ celerybeat-schedule
 
 # Environments
 .env
-.venv
+.venv_old
 env/
 venv/
 ENV/
@@ -119,3 +119,4 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+/yt-dlp.exe
