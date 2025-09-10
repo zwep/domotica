@@ -58,13 +58,13 @@ module create_border(size, wall_width) {
 //   cell_width: width of each cell
 //   cell_wall: wall thickness of each cell
 ////////////////////////////////////////////////////////////////////
-module create_grid(size, border_width, cell_width, cell_wall) {
+module create_grid(size, border_width, cell_width, cell_wall, border) {
 
-    create_border(size, border_width);
-
+    //create_border(size, border_width);
+    border();
     intersection() {
         grid(size=size,cell_width=cell_width,cell_wall=cell_wall);
-        cuboid(size=size);
+        border();
     }
 }
 
