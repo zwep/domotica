@@ -5,13 +5,7 @@ import sys
 from wahoo.helper import BLE_DEVICE_ADDRESS, POWER_UUID, get_distance_route_points
 import wahoo.helper as whelper
 import math
-import time
 
-"""
-Left to do:
-- show a photo, or multiple after point X
-- Blijvende tekst als we aan het wachten zijn?
-"""
 
 # Global state
 wait = False
@@ -28,7 +22,7 @@ route_points = whelper.get_alp_route()
 num_points = len(route_points)
 
 # I think we are going to tell 8 stories...
-num_segments = 32
+num_segments = 8
 # Let's just say he needs to cycle 5 km
 meters_to_cycle = 5000
 # Calculate how much arbitrary distance we have
@@ -53,7 +47,7 @@ for i, distance in enumerate(route_distance_points):
         segment_counter += 1
         segment_frame_index.append(i)
 # Also include the last one
-segment_frame_index.append(total_arbitrary_distance)
+segment_frame_index.append(num_points-1)
 
 segment_status = {k: False for k in segment_frame_index}
 
@@ -82,12 +76,6 @@ async def handle_ble_and_animation():
             if frame_index >= segment_index:
                 segment_status[segment_index] = True
                 frame_index += 1
-                height, width, _ = frame.shape
-                cv2.putText(frame, "Well done!",
-                            (height//2, width//2), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 8, cv2.LINE_AA)
-                cv2.putText(frame, "Well done!",
-                            (height//2, width//2), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
-
                 wait = True
                 break
 
@@ -97,24 +85,20 @@ async def handle_ble_and_animation():
         whelper.overlay_icon(frame, icon=icon, position=point, direction=direction)
 
         # Draw power
-        # whelper.draw_speedometer(frame, latest_power)
+        whelper.draw_speedometer(frame, latest_power)
         # TODO change this... to not the simualted power
-        whelper.draw_speedometer(frame, get_simulated_power(time_index))
+        # whelper.draw_speedometer(frame, get_simulated_power(time_index))
         time_index += 1
 
         if wait:
             height, width, _ = frame.shape
             if cv2.waitKey(30) & 0xFF == ord('g'):
-                cv2.putText(frame, "GOGOGO!",
-                            (height // 2, width // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
                 wait = False
             else:
                 cv2.putText(frame, "Even wachten...",
-                            (height // 2, width // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
-                z = r'F:\Pictures\file.jpg'
-                derp = cv2.imread(z)
-                cv2.imshow("Lenn's power extravaganza", derp.copy())
-                return
+                            (height // 3, width // 3 * 2), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 8, cv2.LINE_AA)
+                cv2.putText(frame, "Even wachten...",
+                            (height // 3, width // 3 * 2), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 2, cv2.LINE_AA)
 
             cv2.imshow("Lenn's power extravaganza", frame)
             return
@@ -122,7 +106,9 @@ async def handle_ble_and_animation():
             cv2.imshow("Lenn's power extravaganza", frame)
 
         # Update new position
-        frame_index = whelper.watt_to_new_index(get_simulated_power(time_index), frame_index, distance_points=route_distance_points)
+        # frame_index = whelper.watt_to_new_index(get_simulated_power(time_index), frame_index, distance_points=route_distance_points)
+        frame_index = whelper.watt_to_new_index(latest_power, frame_index,
+                                                distance_points=route_distance_points)
 
         # Wait 30 miliseconds for input
         if cv2.waitKey(30) & 0xFF == ord('q'):
