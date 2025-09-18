@@ -5,7 +5,8 @@ Script from chat
 import asyncio
 from bleak import BleakClient, BleakScanner
 
-from wahoo.helper import handle_power_notification, POWER_UUID
+from wahoo.helper import handle_power_notification
+from wahoo.config import POWER_UUID
 
 
 async def main():

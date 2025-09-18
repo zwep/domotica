@@ -1,4 +1,7 @@
-from enum import IntFlag
+from enum import IntFlag, Enum
+
+from wahoo.config import white_color, green_color, red_color, grey_color
+
 
 class CyclingPowerFlags(IntFlag):
     PEDAL_POWER_BALANCE_PRESENT = 1<<0
@@ -14,3 +17,10 @@ class CyclingPowerFlags(IntFlag):
     BOTTOM_DEAD_SPOT_ANGLE_PRESENT = 1<<10
     ACCUMULATED_ENERGY_PRESENT = 1<<11
     OFFSET_COMPENSATION_INDICATOR = 1<<12
+
+
+class QuestionStatus(Enum):
+    NEUTRAL = white_color
+    CORRECT = green_color
+    INCORRECT = red_color
+    VISITING = grey_color

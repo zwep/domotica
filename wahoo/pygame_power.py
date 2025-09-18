@@ -4,7 +4,8 @@ from bleak import BleakClient
 import sys
 import math
 import numpy as np
-from wahoo.helper import BLE_DEVICE_ADDRESS, POWER_UUID, get_distance_route_points
+from wahoo.helper import get_distance_route_points
+from wahoo.config import POWER_UUID, BLE_DEVICE_ADDRESS
 import wahoo.helper as whelper
 
 
@@ -20,7 +21,7 @@ if sys.platform.startswith("win"):
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 # Global state
-wait = False
+pauzed = False
 latest_power = 0
 frame_index = 0
 time_index = 0
@@ -71,7 +72,7 @@ font = pygame.font.SysFont("Arial", 36)
 
 # Async BLE + Pygame loop
 async def handle_ble_and_animation():
-    global latest_power, frame_index, time_index, wait
+    global latest_power, frame_index, time_index, pauzed
 
     # Init Pygame
     pygame.init()
@@ -82,7 +83,7 @@ async def handle_ble_and_animation():
     base_surface = numpy_to_surface(image)
 
     def draw_scene(power):
-        global screen, base_surface, frame_index, wait
+        global screen, base_surface, frame_index, pauzed
 
         # Clone base background
         frame = base_surface.copy()
@@ -102,7 +103,7 @@ async def handle_ble_and_animation():
                 frame_index += 1
                 msg = font.render("Well done!", True, (255, 255, 255))
                 frame.blit(msg, (screen.get_width() // 2 - 100, screen.get_height() // 2))
-                wait = True
+                pauzed = True
                 break
 
         # Draw icon (placeholder, since overlay_icon is OpenCV-based)
@@ -119,8 +120,8 @@ async def handle_ble_and_animation():
         power_text = font.render(f"Power: {int(power)}W", True, (255, 255, 255))
         frame.blit(power_text, (50, 50))
 
-        # Handle waiting logic
-        if wait:
+        # Handle pauzeding logic
+        if pauzed:
             msg = font.render("Even wachten... Press G to continue", True, (255, 255, 255))
             frame.blit(msg, (screen.get_width() // 2 - 200, screen.get_height() // 2 + 50))
 
@@ -130,14 +131,14 @@ async def handle_ble_and_animation():
 
     # BLE handler
     def notification_handler(sender, data):
-        global frame_index, time_index, wait, latest_power
+        global frame_index, time_index, pauzed, latest_power
 
         collected_data = whelper.handle_power_notification(None, data)
         latest_power = collected_data['instantaneous_power']
         power = get_simulated_power(time_index)
         draw_scene(power)
 
-        if not wait:
+        if not pauzed:
             frame_index = whelper.watt_to_new_index(power, frame_index, distance_points=route_distance_points)
         time_index += 1
 
@@ -163,8 +164,8 @@ async def handle_ble_and_animation():
                         if event.key == pygame.K_q:
                             running = False
                             break
-                        elif wait and event.key == pygame.K_g:
-                            wait = False
+                        elif pauzed and event.key == pygame.K_g:
+                            pauzed = False
 
                 clock.tick(30)  # Cap at 30 FPS
         finally:

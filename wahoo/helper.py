@@ -1,26 +1,10 @@
+import tkinter as tk
 import cv2
-import numpy as np
 import math
+
+from wahoo.config import ICON_PATH, ALP_IMG_PATH, ALP_ROUTE_PATH
 from wahoo.models import CyclingPowerFlags
-from PIL import Image
 
-ICON_PATH = r"F:\Documents\lenn\cycler_with_head.png"
-ALP_IMG_PATH = r"F:\Documents\lenn\alpe_sat.jpg"
-ALP_ROUTE_PATH = r"F:\Documents\lenn\route_alpe_sat.txt"
-
-# BLE UUID for Cycling Power Measurement
-# Overview of other UUIDs
-# https://gist.github.com/sam016/4abe921b5a9ee27f67b3686910293026
-POWER_UUID = "00002a63-0000-1000-8000-00805f9b34fb"
-BLE_DEVICE_ADDRESS = "C6:76:C5:B6:3C:14"
-
-# This shows how the data is encoded
-# https://bitbucket.org/bluetooth-SIG/public/src/main/gss/
-# This shows all the specifications
-# https://btprodspecificationrefs.blob.core.windows.net/gatt-specification-supplement/GATT_Specification_Supplement.pdf
-
-# This also helped me
-# https://github.com/hbldh/bleak/discussions/1579
 
 def get_icon():
     # TODO: CHeck how we want to resize.. and if we can maintain that the white background is nulled...
@@ -171,6 +155,7 @@ def draw_speedometer(frame, power, center=(550, 250), radius=200):
     color_outer_arc = (180, 180, 180)
     color_power_label = (255, 255, 255)
     color_needle = (0, 0, 255)
+    # BGR is the color coding here...
 
     # Draw outer arc (semi-circle from -120° to +120°)
     for angle in range(-120, 121, 2):
@@ -237,19 +222,22 @@ def get_distance_route_points(route_points):
     return dist_points
 
 
-def watt_to_mps(watt):
+def watt_to_mps(watt, difficulty_factor):
     # 200 watts equals 30 kmh (=8.3 m/s) is what I say here
     # The 3.6 is the conversion from kmh -> m/s
     # I think I should calculate in meters and seconds here...
+    # The difficulty factor can decrease the efficiency...
+    # Meaning that with a difficulty factor of 1, we have that 200 Watts equal 30km/u
+    # With a factor of 2, we have that 200 Watts equal 15km/u
     mps_reff = 30 / 3.6
-    watt_reff = 200
+    watt_reff = 200 * difficulty_factor
     return watt * (mps_reff / watt_reff)
 
 
-def watt_to_new_index(watt, current_index, distance_points):
+def watt_to_new_index(watt, current_index, distance_points, difficulty_factor=1):
     # We are doing everything per second basis..
     # So actually, this is just 'meters'
-    mps = watt_to_mps(watt)
+    mps = watt_to_mps(watt, difficulty_factor)
     # This gives the distance to GO TO this current index
     total_distance = 0
     for j, dist in enumerate(distance_points[current_index:]):
@@ -261,3 +249,43 @@ def watt_to_new_index(watt, current_index, distance_points):
             return j + current_index
 
     return len(distance_points) + 1
+
+
+def display_text(frame, text, position, fontscale=1.5):
+    cv2.putText(frame, text, position, cv2.FONT_HERSHEY_SIMPLEX, fontscale, (0,0,0), 8, cv2.LINE_AA)
+    cv2.putText(frame, text, position, cv2.FONT_HERSHEY_SIMPLEX, fontscale, (255, 255, 255), 2, cv2.LINE_AA)
+
+def display_circle(frame, position, color):
+    cv2.circle(frame, center=position, radius=8, color=(0,0,0), thickness=-1)
+    cv2.circle(frame, center=position, radius=6, color=color, thickness=-1)
+
+
+def get_simulated_power(time_point):
+    return 400 * abs(math.sin(2 * 3.14 * time_point/100))
+
+
+def get_screen_width_height():
+    # Prepare the image for full screen...
+    root = tk.Tk()
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    root.destroy()
+
+    return screen_height, screen_width
+
+
+def scale_image_to_window(image, max_width, max_height):
+    img_height, img_width = image.shape[:2]
+    aspect_ratio = img_width / img_height
+
+    # Calculate new size
+    if max_width / max_height > aspect_ratio:
+        new_height = max_height
+        new_width = int(aspect_ratio * new_height)
+    else:
+        new_width = max_width
+        new_height = int(new_width / aspect_ratio)
+
+    # No clue why the height/width is reversed here...
+    resized_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
+    return resized_image

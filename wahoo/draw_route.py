@@ -1,5 +1,6 @@
 import cv2
-from wahoo.helper import ALP_ROUTE_PATH, get_alps
+from wahoo.helper import get_alps
+from wahoo.config import ALP_ROUTE_PATH
 
 # Load your image
 image = get_alps()
