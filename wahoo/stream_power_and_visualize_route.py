@@ -4,19 +4,14 @@ from bleak import BleakClient
 import sys
 
 import wahoo.config
-from wahoo.config import simulation, window_name, POWER_UUID, BLE_DEVICE_ADDRESS, BUFFER_SIZE, IMAGE_BUFFER, \
-    IMAGE_PATHS, IMG_FOLDER
+from wahoo.config import simulation, window_name, POWER_UUID, BLE_DEVICE_ADDRESS, SLIDESHOW_IMG_PATHS, IMG_FOLDER
 from wahoo.models import QuestionStatus
 import wahoo.helper as whelper
 import numpy as np
 
 """
 What to do..
-
-- display images...
-
-- Make positions in terms of fraction of height/ width?
-- Or scale everything..?
+- Display some status on what we are doing.. have done..0
 """
 
 icon = whelper.get_icon()
@@ -40,8 +35,8 @@ canvas[:, :new_width] = resized_alp_image
 height_canvas, width_canvas, _ = canvas.shape
 
 # Positions of text, everything should be relative towards height/width of canvas
-question_text_position = (height_canvas // 3, width_canvas // 3 * 2)
-difficulty_text_position = (int(height_canvas / 2.16), int(width_canvas / 2.793))
+question_text_position = (height_canvas // 5, new_width)
+difficulty_text_position = (int(height_canvas / 2.304), int(width_canvas / 3.23))
 speedometer_position = (int(height_canvas / 1.728), int(width_canvas / 6.144))
 speedometer_radius = int(height_canvas / 4.32)
 
@@ -77,22 +72,14 @@ question_frame_index = sorted(question_frame_index)
 question_status = {k: QuestionStatus.NEUTRAL for k in question_frame_index}
 
 
-"""
-Somewhere I need to make the mapping from the images and the questions...
-
-And I need a function to easily refill the buff
-
-And I need to display some status:
-"""
-
-
-# Pre-fill the buffer
-# Somewhere here we assume that we have a landscape screen...
-for i in range(min(BUFFER_SIZE, len(IMAGE_PATHS))):
-    image = cv2.imread(IMAGE_PATHS[i])
-    # Also scale the image so that it fits....
-    new_image = whelper.scale_image_to_window(image, max_width=screen_width - new_width, max_height=new_height)
-    IMAGE_BUFFER.append(new_image)
+question_photo_mapping = {}
+for question_nr, image_name_list in SLIDESHOW_IMG_PATHS.items():
+    question_photo_mapping.setdefault(question_nr, [])
+    for image_name in image_name_list:
+        image = cv2.imread(IMG_FOLDER / f"{image_name}.jpg")
+        # Also scale the image so that it fits....
+        new_image = whelper.scale_image_to_window(image, max_width=screen_width - new_width, max_height=new_height)
+        question_photo_mapping[question_nr].append(new_image)
 
 current_image_index = 0
 current_image = None
@@ -152,7 +139,7 @@ async def handle_ble_and_animation():
         # Draw the difficulty text
         str_difficulty_factor = int(wahoo.config.difficulty_factor * 100)
         difficulty_factor_text = f"Moeilijkheid: {str_difficulty_factor} %"
-        whelper.display_text(frame, difficulty_factor_text, position=difficulty_text_position)
+        whelper.display_text(frame, difficulty_factor_text, position=difficulty_text_position, fontscale=1)
 
         pressed_key = cv2.waitKey(30) & 0xFF  # Only call this ONCE
 
@@ -182,35 +169,46 @@ async def handle_ble_and_animation():
                     return
 
                 # Oh no... how to make this persistent...
-                current_image = IMAGE_BUFFER[0]
-                img_height, img_width, _ = current_image.shape
-                frame[:, new_width:] = np.zeros(frame[:, new_width:].shape)
-                frame[:img_height, new_width:new_width + img_width] = current_image
-                current_image_index += 1
-                if current_image_index + BUFFER_SIZE - 1 < len(IMAGE_PATHS):
-                    # Load next image into buffer
-                    next_img = cv2.imread(IMAGE_PATHS[current_image_index + BUFFER_SIZE - 1])
-                    new_image = whelper.scale_image_to_window(next_img, max_width=screen_width - new_width,
-                                                              max_height=new_height)
+                question_nr = question_frame_index.index(visiting_question)
+                n_photos = len(question_photo_mapping[question_nr])
+                if n_photos > 0:
+                    current_image = question_photo_mapping[question_nr][current_image_index]
+                    img_height, img_width, _ = current_image.shape
+                    frame[:, new_width:] = np.zeros(frame[:, new_width:].shape)
+                    frame[:img_height, new_width:new_width + img_width] = current_image
+                    current_image_index += 1
 
-                    IMAGE_BUFFER.append(new_image)
-                IMAGE_BUFFER.popleft()
-
-                if current_image_index == (len(IMAGE_PATHS) - 1):
+                if current_image_index == n_photos:
                     # Reset everything...
                     # Next up: format images per question
                     current_image_index = 0
                     current_image = None
+                    visiting_question = None
                     frame[:, new_width:] = np.zeros(frame[:, new_width:].shape)
                     wahoo.config.paused = False
 
             elif pressed_key == ord('q'):
                 sys.exit()
             else:
-                if question_status[visiting_question] == QuestionStatus.VISITING:
-                    question_text = "Antwoord op vraag..."
+                n_photos = 0
+                question_nr = -1
+                if visiting_question in question_frame_index:
+                    question_nr = question_frame_index.index(visiting_question)
+                    n_photos = len(question_photo_mapping[question_nr])
+
+                if question_nr == 0:
+                    question_name = "de oefen vraag"
                 else:
-                    question_text = f"Vraag nummer {visiting_question}"
+                    question_name = f"vraag nummer {question_nr}"
+
+                if question_status[visiting_question] == QuestionStatus.VISITING:
+                    question_text = f"Antwoord voor {question_name}"
+                elif visiting_question is None:
+                    question_text = "FIETSEN FIETSEN FIETSEN!"
+                elif current_image_index < n_photos:
+                    question_text = ""
+                else:
+                    question_text = f"{question_name.capitalize()}"
 
                 whelper.display_text(frame, question_text, position=question_text_position)
 
