@@ -11,7 +11,9 @@ import numpy as np
 
 """
 What to do..
-- Display some status on what we are doing.. have done..0
+- Status is better... but question numbering and ordering can be improed
+- Also check the last question
+
 """
 
 icon = whelper.get_icon()
