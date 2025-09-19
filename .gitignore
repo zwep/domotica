@@ -21,6 +21,7 @@ venv2
 
 # privatestuff
 config.py
+!wahoo/config.py
 
 # Distribution / packaging
 .Python
